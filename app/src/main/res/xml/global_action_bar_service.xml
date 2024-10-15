@@ -1,0 +1,7 @@
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityEventTypes="typeViewClicked|typeViewFocused"
+    android:accessibilityFlags="flagDefault"
+    android:canPerformGestures="true"
+    android:canTakeScreenshot="true"
+    android:canRetrieveWindowContent="true" />
