@@ -1,4 +1,4 @@
-package com.example.myapplication1;
+package xxx.solzer.dlsbot;
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,9 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-
-import com.example.myapplication1.R;
-import com.example.myapplication1.AutoService;
 
 public class FloatingView extends Service implements View.OnClickListener {
     

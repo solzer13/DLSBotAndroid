@@ -1,11 +1,10 @@
-package com.example.myapplication1;
+package xxx.solzer.dlsbot;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import java.io.FileOutputStream;

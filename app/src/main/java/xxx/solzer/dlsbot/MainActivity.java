@@ -1,10 +1,9 @@
-package com.example.myapplication1;
+package xxx.solzer.dlsbot;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import com.example.myapplication1.R;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,7 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
-import com.example.myapplication1.FloatingView;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,6 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
@@ -54,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             Mat img_display = new Mat();
             Mat result = new Mat();
-            Mat screen = getAsset("screen.png");
-            Mat templ = getAsset("1.png");
+            Mat screen = getAsset("screen2.png");
+            Mat templ = getAsset("btn_event.png");
             
             screen.copyTo(img_display);
             
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             
             Point matchLoc = mmr.minLoc;
             
-            Imgproc.rectangle(img_display, matchLoc, new Point(matchLoc.x + templ.cols(), matchLoc.y + templ.rows()), new Scalar(255, 0, 0), 2, 8, 0);
+            Imgproc.rectangle(img_display, matchLoc, new Point(matchLoc.x + templ.cols(), matchLoc.y + templ.rows()), new Scalar(255, 0, 0, 255), 2, 8, 0);
             //Imgproc.rectangle(result, matchLoc, new Point(matchLoc.x + templ.cols(), matchLoc.y + templ.rows()), new Scalar(0, 0, 0), 2, 8, 0);
         
             Bitmap bmp = Bitmap.createBitmap(img_display.cols(), img_display.rows(), Bitmap.Config.ARGB_8888);
