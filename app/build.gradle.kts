@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    implementation("org.greenrobot:eventbus:3.3.1")
     implementation("org.opencv:opencv:4.9.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

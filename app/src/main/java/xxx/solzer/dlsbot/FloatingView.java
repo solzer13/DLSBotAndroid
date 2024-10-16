@@ -110,8 +110,8 @@ public class FloatingView extends Service implements View.OnClickListener {
                 int[] location = new int[2];
                 myFloatingView.getLocationOnScreen(location);
                 intent.putExtra("action", "play");
-                intent.putExtra("x", location[0] - 1);
-                intent.putExtra("y", location[1] - 1);
+                //intent.putExtra("x", location[0] - 1);
+                //intent.putExtra("y", location[1] - 1);
         }
         
         if(id ==R.id.stop){

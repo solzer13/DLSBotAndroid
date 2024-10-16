@@ -2,8 +2,8 @@ package xxx.solzer.dlsbot;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -25,15 +27,17 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import xxx.solzer.dlsbot.events.OnScreenTaked;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    //FrameLayout mLayout;
+public class MainActivity extends AppCompatActivity {
+
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.bus.register(this);
         setContentView(R.layout.activity_main);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
@@ -47,7 +51,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
             return;
         }
-        findViewById(R.id.startFloat).setOnClickListener(this);
+        
+        findViewById(R.id.startFloat).setOnClickListener(this::onClick);
+        
+        //test();
+    }
+
+    @Override
+    public void onDestroy() {
+        App.bus.unregister(this);
+        super.onDestroy();
+    }
+    
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)  
+    public void onEvent(OnScreenTaked screen) {
+        Log.d(TAG, "Screen taked");
+    }
+    
+    private void test(){
         
         try {
             Mat img_display = new Mat();
@@ -94,14 +115,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void askPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName()));
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
     }
 
-
-    @Override
     public void onClick(View v) {
+        
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             startService(new Intent(MainActivity.this, FloatingView.class));
             finish();
@@ -112,5 +131,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             askPermission();
             Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    public void showToast(String msg) {
+        var toast = new Toast(this);
+        toast.setText(msg);
+        toast.show();
     }
 }

@@ -17,29 +17,74 @@ import androidx.annotation.RequiresApi;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.Executor;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import xxx.solzer.dlsbot.events.OnScreenTaked;
 
 public class AutoService extends AccessibilityService {
+    
     private Handler mHandler;
+    
     private int mX;
     private int mY;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
+        App.bus.register(this);
         HandlerThread handlerThread = new HandlerThread("auto-handler");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
     }
 
     @Override
+    public void onDestroy() {
+        App.bus.unregister(this);
+        super.onDestroy();
+    }
+    
+    @Override
     protected void onServiceConnected() {
 
     }
     
-    @Override
-    public void takeScreenshot(int displayId, Executor executor, TakeScreenshotCallback callback) {
-        super.takeScreenshot(displayId, executor, callback);
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)  
+    public void onEvent(OnScreenTaked screen) {
+        Log.d("111111", "Screen taked2");
+    }
+    
+    public Bitmap takeScreen() {
+        String tag_screen = "ScreenShotResult";
+    
+        takeScreenshot(
+            Display.DEFAULT_DISPLAY,
+            getApplicationContext().getMainExecutor(),
+            new TakeScreenshotCallback() {
+                @RequiresApi(api = Build.VERSION_CODES.R)
+                @Override
+                public void onSuccess(ScreenshotResult screenshotResult) {
+                    Log.d(tag_screen, "onSuccess");
+                    Bitmap bmp = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                    App.bus.post(new OnScreenTaked(bmp));
+                }
+
+                @Override
+                public void onFailure(int i) {
+                    Log.d(tag_screen, "onFailure code is " + i);
+                }
+            }
+        );
+        
+        return null;
+    }
+    
+    private void saveBitmap(Bitmap bmp, String file){
+        try (FileOutputStream out = new FileOutputStream(getFilesDir() + "/" + file)) {
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); 
+        } catch (IOException e) {
+            Log.e("saveBitmap", e.getMessage());
+        }
+        // AccessibilityUtils.saveImage(bitmap, getApplicationContext(), "WhatsappIntegration");
     }
     
     @Override
@@ -49,39 +94,7 @@ public class AutoService extends AccessibilityService {
             String action = intent.getStringExtra("action");
             
             if (action.equals("play")) {
-                takeScreenshot(
-                        Display.DEFAULT_DISPLAY,
-                        getApplicationContext().getMainExecutor(),
-                        new TakeScreenshotCallback() {
-                            @RequiresApi(api = Build.VERSION_CODES.R)
-                            @Override
-                            public void onSuccess(ScreenshotResult screenshotResult) {
-
-                                Log.i("ScreenShotResult", "onSuccess");
-                                Bitmap bitmap =
-                                        Bitmap.wrapHardwareBuffer(
-                                                screenshotResult.getHardwareBuffer(),
-                                                screenshotResult.getColorSpace());
-                                try (FileOutputStream out = new FileOutputStream(getFilesDir() + "/screen.png")) {
-                                    bitmap.compress(
-                                            Bitmap.CompressFormat.PNG,
-                                            100,
-                                            out); // bmp is your Bitmap instance
-                                    // PNG is a lossless format, the compression factor (100) is
-                                    // ignored
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                // AccessibilityUtils.saveImage(bitmap, getApplicationContext(),
-                                // "WhatsappIntegration");
-                            }
-
-                            @Override
-                            public void onFailure(int i) {
-
-                                Log.i("ScreenShotResult", "onFailure code is " + i);
-                            }
-                        });
+                takeScreen();
 //                mX = intent.getIntExtra("x", 0);
 //                Log.d("x_value",Integer.toString(mX));
 //                mY = intent.getIntExtra("y", 0);

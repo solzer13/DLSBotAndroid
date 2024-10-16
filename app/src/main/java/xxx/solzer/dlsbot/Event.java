@@ -1,4 +1,4 @@
 package xxx.solzer.dlsbot;
 
-public class Log {
+public abstract class Event {
 }
