@@ -10,7 +10,7 @@ android {
     
     defaultConfig {
         applicationId = "xxx.solzer.dlsbot"
-        minSdk = 21
+        minSdk = 30
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

@@ -20,11 +20,13 @@ import java.util.concurrent.Executor;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
+import xxx.solzer.dlsbot.events.OnTakeScreen;
+import xxx.solzer.dlsbot.events.OnTap;
 
 public class AutoService extends AccessibilityService {
     
     private Handler mHandler;
-    
+
     private int mX;
     private int mY;
 
@@ -42,42 +44,36 @@ public class AutoService extends AccessibilityService {
         App.bus.unregister(this);
         super.onDestroy();
     }
-    
-    @Override
-    protected void onServiceConnected() {
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEvent(OnTap event) {
+        Log.d("OnTap", "Point: " + event.point.x + "x" + event.point.y);
     }
-    
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)  
-    public void onEvent(OnScreenTaked screen) {
-        Log.d("111111", "Screen taked2");
-    }
-    
-    public Bitmap takeScreen() {
-        String tag_screen = "ScreenShotResult";
-    
+    public void onEvent(OnTakeScreen event) {
+        final String tag_screen = "OnTakeScreen";
+
         takeScreenshot(
             Display.DEFAULT_DISPLAY,
             getApplicationContext().getMainExecutor(),
             new TakeScreenshotCallback() {
-                @RequiresApi(api = Build.VERSION_CODES.R)
                 @Override
                 public void onSuccess(ScreenshotResult screenshotResult) {
-                    Log.d(tag_screen, "onSuccess");
-                    Bitmap bmp = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                    App.bus.post(new OnScreenTaked(bmp));
+                    Log.d(tag_screen, "Success");
+                    Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                    saveBitmap(screen, "last.png");
+                    App.bus.post(new OnScreenTaked(screen));
                 }
 
                 @Override
                 public void onFailure(int i) {
-                    Log.d(tag_screen, "onFailure code is " + i);
+                    Log.d(tag_screen, "Failure code is " + i);
                 }
             }
         );
-        
-        return null;
     }
-    
+
     private void saveBitmap(Bitmap bmp, String file){
         try (FileOutputStream out = new FileOutputStream(getFilesDir() + "/" + file)) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out); 
@@ -94,7 +90,7 @@ public class AutoService extends AccessibilityService {
             String action = intent.getStringExtra("action");
             
             if (action.equals("play")) {
-                takeScreen();
+                BountyGround bg = new BountyGround(getAssets());
 //                mX = intent.getIntExtra("x", 0);
 //                Log.d("x_value",Integer.toString(mX));
 //                mY = intent.getIntExtra("y", 0);

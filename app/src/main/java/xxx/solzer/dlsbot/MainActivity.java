@@ -34,24 +34,24 @@ public class MainActivity extends AppCompatActivity {
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String TAG = "MainActivity";
 
+    public MainActivity()
+    {
+        if (OpenCVLoader.initLocal()) {
+            Log.i("TAG", "OpenCV loaded successfully");
+        } else {
+            Log.e("TAG", "OpenCV initialization failed!");
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.bus.register(this);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+        if (!Settings.canDrawOverlays(this)) {
             askPermission();
         }
-        
-        if (OpenCVLoader.initLocal()) {
-            Log.i(TAG, "OpenCV loaded successfully");
-        } else {
-            Log.e(TAG, "OpenCV initialization failed!");
-            (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
-            return;
-        }
-        
+
         findViewById(R.id.startFloat).setOnClickListener(this::onClick);
         
         //test();

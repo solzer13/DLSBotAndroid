@@ -1,7 +1,11 @@
 package xxx.solzer.dlsbot;
 
 import android.app.Application;
+import android.util.Log;
+import android.widget.Toast;
+
 import org.greenrobot.eventbus.EventBus;
+import org.opencv.android.OpenCVLoader;
 
 public class App extends Application {
     
@@ -15,7 +19,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        
+
         bus = EventBus.builder()
                 .logNoSubscriberMessages(false)
                 .sendNoSubscriberEvent(false)
