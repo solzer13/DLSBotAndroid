@@ -45,12 +45,13 @@ public class AutoService extends AccessibilityService {
         super.onDestroy();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(OnTap event) {
         Log.d("OnTap", "Point: " + event.point.x + "x" + event.point.y);
+        tap(event.point.x, event.point.y);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)  
+    @Subscribe(threadMode = ThreadMode.MAIN)  
     public void onEvent(OnTakeScreen event) {
         final String tag_screen = "OnTakeScreen";
 
@@ -62,7 +63,7 @@ public class AutoService extends AccessibilityService {
                 public void onSuccess(ScreenshotResult screenshotResult) {
                     Log.d(tag_screen, "Success");
                     Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                    saveBitmap(screen, "last.png");
+                    App.saveBitmap(screen, "last_screen.png");
                     App.bus.post(new OnScreenTaked(screen));
                 }
 
@@ -74,15 +75,6 @@ public class AutoService extends AccessibilityService {
         );
     }
 
-    private void saveBitmap(Bitmap bmp, String file){
-        try (FileOutputStream out = new FileOutputStream(getFilesDir() + "/" + file)) {
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); 
-        } catch (IOException e) {
-            Log.e("saveBitmap", e.getMessage());
-        }
-        // AccessibilityUtils.saveImage(bitmap, getApplicationContext(), "WhatsappIntegration");
-    }
-    
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Service","SERVICE STARTED");

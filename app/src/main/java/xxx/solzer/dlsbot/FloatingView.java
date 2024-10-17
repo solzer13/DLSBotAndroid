@@ -52,7 +52,7 @@ public class FloatingView extends Service implements View.OnClickListener {
                 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d("TOUCH","THIS IS TOUCHED");
+                //Log.d("TOUCH","THIS IS TOUCHED");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x;

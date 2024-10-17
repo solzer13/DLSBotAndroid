@@ -29,6 +29,8 @@ public class BountyGround {
     private final AssetManager am;
 
     private int step = 1;
+    
+    private final double TRESHOLD = 3E7;
 
     public BountyGround(AssetManager am){
         this.am = am;
@@ -36,7 +38,7 @@ public class BountyGround {
         App.bus.post(new OnTakeScreen());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = false)
     public void onEvent(OnScreenTaked screen) throws InterruptedException {
         Log.d(TAG, "Screen taked");
 
@@ -51,12 +53,13 @@ public class BountyGround {
             if(btn_loc != null){
                 this.step = 2;
                 App.bus.post(new OnTap(btn_loc));
-                Thread.sleep(2000);
-                App.bus.post(new OnTakeScreen());
+                //Thread.sleep(2000);
+                //App.bus.post(new OnTakeScreen());
             }
             else {
                 Log.e(TAG, "Did not find CampaignButton");
             }
+            return;
         }
 
         if(this.step == 2){
@@ -69,17 +72,22 @@ public class BountyGround {
             Mat result = new Mat();
             Mat matBtn = this.getAsset(BTN_CAMPAIGN_FILE);
 
-            Imgproc.matchTemplate(mat, matBtn, result, Imgproc.TM_SQDIFF_NORMED);
+            Imgproc.matchTemplate(mat, matBtn, result, Imgproc.TM_CCOEFF);
 
             var mml = Core.minMaxLoc(result);
+            var loc = mml.maxLoc;
 
-            Log.e(TAG, mml.minVal + " / " + mml.maxVal);
+            Log.d(TAG, "Min value: " + mml.minVal);
+            Log.d(TAG, "Max value: " + mml.maxVal);
+            Log.d(TAG, "Treshold: " + TRESHOLD);
+            
+            saveDebugScreen(mat, matBtn, loc, "findCampaignButton");
 
-            Point matchLoc = mml.minLoc;
-
-            return new Point(
-                    matchLoc.x + (double) (matBtn.cols() / 2),
-                    matchLoc.y + (double) (matBtn.rows() / 2));
+            if(mml.maxVal > TRESHOLD){
+                return new Point(
+                    loc.x + (double) (matBtn.cols() / 2),
+                    loc.y + (double) (matBtn.rows() / 2));
+            }
 
         } catch (Exception ex) {
             Log.e(TAG, ex.getMessage());
@@ -96,4 +104,22 @@ public class BountyGround {
         return result;
     }
 
+    private void saveDebugScreen(Mat screen, Mat tpl, Point loc, String name){
+        Mat img_display = new Mat();
+        
+        screen.copyTo(img_display);
+        
+        Imgproc.rectangle(
+            img_display, 
+            loc, 
+            new Point(loc.x + tpl.cols(), loc.y + tpl.rows()), 
+            App.RED, 
+            2, 
+            8, 
+            0);      
+            
+        Bitmap bmp = Bitmap.createBitmap(img_display.cols(), img_display.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(img_display, bmp);
+        App.saveBitmap(bmp, name + ".png");
+    }
 }
