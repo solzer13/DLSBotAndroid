@@ -7,21 +7,24 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:background="@color/purple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape"
         android:id="@+id/thisIsAnID">
-            <Button
-                android:id="@+id/stop"
-                android:text="stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                
+        <ImageButton
+            android:id="@+id/btnFloatingAction"
+            android:src="@drawable/play_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-            <Button
-                android:id="@+id/start"
-                android:text="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+        <ImageView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:tint="@color/md_theme_surfaceBright"
+            android:src="@drawable/drag_indicator_24" />
+    
     </LinearLayout>
 
 </FrameLayout>

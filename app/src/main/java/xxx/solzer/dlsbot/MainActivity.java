@@ -1,141 +1,185 @@
 package xxx.solzer.dlsbot;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
-import org.opencv.core.Core;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import xxx.solzer.dlsbot.events.OnScreenTaked;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String TAG = "MainActivity";
+    private Toolbar toolbar;
 
-    public MainActivity()
-    {
+    public MainActivity() {
         if (OpenCVLoader.initLocal()) {
             Log.i("TAG", "OpenCV loaded successfully");
         } else {
             Log.e("TAG", "OpenCV initialization failed!");
         }
     }
+    
+    public static boolean isAccessibilitySettingsOn(Context mContext) {
+        int accessibilityEnabled = 0;
+        //your package /   accesibility service path/class
+        final String service = "xxx.solzer.dlsbot/xxx.solzer.dlsbot.FloatingService";
+    
+        boolean accessibilityFound = false;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+                    + e.getMessage());
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+    
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILIY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                TextUtils.SimpleStringSplitter splitter = mStringColonSplitter;
+                splitter.setString(settingValue);
+                while (splitter.hasNext()) {
+                    String accessabilityService = splitter.next();
+    
+                    Log.v(TAG, "-------------- > accessabilityService :: " + accessabilityService);
+                    if (accessabilityService.equalsIgnoreCase(service)) {
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+            Log.v(TAG, "***ACCESSIBILIY IS DISABLED***");
+        }
+    
+        return accessibilityFound;
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.bus.register(this);
         setContentView(R.layout.activity_main);
 
-        if (!Settings.canDrawOverlays(this)) {
-            askPermission();
-        }
-
-        findViewById(R.id.startFloat).setOnClickListener(this::onClick);
+        this.toolbar = findViewById(R.id.toolbar);
         
-        //test();
+        setSupportActionBar(this.toolbar);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, new SettingsFragment())
+                .commit();
     }
 
     @Override
-    public void onDestroy() {
-        App.bus.unregister(this);
-        super.onDestroy();
-    }
-    
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)  
-    public void onEvent(OnScreenTaked screen) {
-        Log.d(TAG, "Screen taked");
-    }
-    
-    private void test(){
-        
-        try {
-            Mat img_display = new Mat();
-            Mat result = new Mat();
-            Mat screen = getAsset("screen2.png");
-            Mat templ = getAsset("btn_event.png");
-            
-            screen.copyTo(img_display);
-            
-            Imgproc.matchTemplate(screen, templ, result, Imgproc.TM_SQDIFF_NORMED);
-            
-            Core.MinMaxLocResult mmr = Core.minMaxLoc(result);
-            
-            Point matchLoc = mmr.minLoc;
-            
-            Imgproc.rectangle(img_display, matchLoc, new Point(matchLoc.x + templ.cols(), matchLoc.y + templ.rows()), new Scalar(255, 0, 0, 255), 2, 8, 0);
-            //Imgproc.rectangle(result, matchLoc, new Point(matchLoc.x + templ.cols(), matchLoc.y + templ.rows()), new Scalar(0, 0, 0), 2, 8, 0);
-        
-            Bitmap bmp = Bitmap.createBitmap(img_display.cols(), img_display.rows(), Bitmap.Config.ARGB_8888);
-            Utils.matToBitmap(img_display, bmp);
-            saveImage("out.png", bmp);
-        } catch (Exception ex) {
-            Log.e(TAG, ex.getLocalizedMessage());
-        }
-        
-    }
+    protected void onResume() {
+        super.onResume();
 
-    private Mat getAsset(String file) throws IOException {
-        Mat result = new Mat();
-        InputStream stream = getAssets().open(file);
-        Bitmap bitmap = BitmapFactory.decodeStream(stream);
-        Utils.bitmapToMat(bitmap, result);
-        return result;
+        if(App.isMyServiceRunning(CommandService.class)){
+            Log.d(TAG, "TRUE");
+        }
+        else {
+            Log.d(TAG, "FALSE");
+            //askPermission();
+        }
+        //this.toolbar.setTitle("Стандартный заголовок");
+        // mToolbar.setSubtitle("Подзаголовок");
+        // mToolbar.setLogo(R.drawable.ic_launcher_foreground);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.action_start);
+        item.setIcon(R.drawable.ic_launcher_foreground);
+        
+        if(App.isMyServiceRunning(FloatingService.class)){
+            item.setIcon(R.drawable.stop_32);
+        }
+        else {
+            item.setIcon(R.drawable.play_32);
+        }
+        
+        return true;
     }
     
-    private void saveImage(String file, Bitmap bitmap){
-        try (FileOutputStream out = new FileOutputStream(getFilesDir() + "/" + file)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is
-            // ignored
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        
+        if(id == R.id.action_start){
+            if(App.isMyServiceRunning(FloatingService.class)){
+                this.onStopClick();
+                item.setIcon(R.drawable.play_32);
+            }
+            else {
+                this.onStartClick();
+                item.setIcon(R.drawable.stop_32);
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void askPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
-    }
-
-    public void onClick(View v) {
-        
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            startService(new Intent(MainActivity.this, FloatingView.class));
-            finish();
-        } else if (Settings.canDrawOverlays(this)) {
-            startService(new Intent(MainActivity.this, FloatingView.class));
-            finish();
-        } else {
-            askPermission();
-            Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
-        }
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS, Uri.parse("package:" + getPackageName()));
+        //startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
     }
     
+    public void onStopClick() {
+        stopService(App.floatingIntent);
+    }
+
+    public void onStartClick() {
+        startService(App.floatingIntent);
+        
+//        Intent startMain = new Intent(Intent.ACTION_MAIN);
+//        startMain.addCategory(Intent.CATEGORY_HOME);
+//        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            startService(App.floatingIntent);
+//            startActivity(startMain);
+//            //finish();
+//        } else if (Settings.canDrawOverlays(this)) {
+//            startService(new Intent(MainActivity.this, FloatingService.class));
+//            startActivity(startMain);
+//            //finish();
+//        } else {
+//            askPermission();
+//            Toast.makeText(
+//                            this,
+//                            "You need System Alert Window Permission to do this",
+//                            Toast.LENGTH_SHORT)
+//                    .show();
+//        }
+    }
+
     public void showToast(String msg) {
         var toast = new Toast(this);
         toast.setText(msg);
         toast.show();
     }
+
 }

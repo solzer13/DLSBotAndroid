@@ -1,0 +1,141 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Ивенты">
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Охота за призом"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Война за воду"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Лечение">
+                
+        <SwitchPreferenceCompat
+            android:key="healing"
+            android:title="Включить лечение"/>
+
+        <SeekBarPreference
+            android:key="seekbar"
+            android:dependency="healing"
+            android:title="Колличество войск"
+            android:summary="Сколько войск лечить за раз"
+            app:showSeekBarValue="true"
+            android:min="100"
+            android:max="5000"
+            android:defaultValue="500"/>
+        
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="healing"
+            android:title="Пехота"/>
+        
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="healing"
+            android:title="Байкеры"/>
+
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="healing"
+            android:title="Лучники"/>
+
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="healing"
+            android:title="Машинки"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Фермерство">
+                
+        <SwitchPreferenceCompat
+            android:key="farming"
+            android:title="Включить сбор ресурсов"/>
+
+        <SeekBarPreference
+            android:key="seekbar"
+            android:dependency="farming"
+            android:title="Колличество отрядов"
+            android:summary="Сколько отрядов использовать.для сбора"
+            app:showSeekBarValue="true"
+            android:min="100"
+            android:max="5"
+            android:defaultValue="1"/>
+        
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="farming"
+            android:title="Помидоры"/>
+        
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="farming"
+            android:title="Дерево"/>
+
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="farming"
+            android:title="Сталь"/>
+
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:dependency="farming"
+            android:title="Нефть"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Другие действия">
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Помощь"
+            android:summary="Нажимать кнопку помощи"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Полицейский участок"
+            android:summary="Собирать награды в полицейском участке"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Радар"
+            android:summary="Выполнять задания с радара"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Ресурсы в городе"
+            android:summary="Собирать ресурсы в городе"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Взносы в технологии"
+            android:summary="Делать взносы в технологии альянса"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Подарки"
+            android:summary="Собирать подарки альянса"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="Гараж"
+            android:summary="Запускать производство в гараже"/>
+        
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title=""
+            android:summary="Запускать производство в гараже"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

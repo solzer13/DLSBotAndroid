@@ -23,7 +23,9 @@ import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
 
-public class AutoService extends AccessibilityService {
+public class CommandService extends AccessibilityService {
+    
+    private static final String TAG = "ProcessService";
     
     private Handler mHandler;
 
@@ -42,13 +44,14 @@ public class AutoService extends AccessibilityService {
     @Override
     public void onDestroy() {
         App.bus.unregister(this);
+        Log.d(TAG,"STOPED");
         super.onDestroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(OnTap event) {
         Log.d("OnTap", "Point: " + event.point.x + "x" + event.point.y);
-        tap(event.point.x, event.point.y);
+        tap((int)event.point.x, (int)event.point.y);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)  
@@ -77,12 +80,12 @@ public class AutoService extends AccessibilityService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("Service","SERVICE STARTED");
+        Log.d(TAG,"STARTED");
         if(intent!=null){
             String action = intent.getStringExtra("action");
             
             if (action.equals("play")) {
-                BountyGround bg = new BountyGround(getAssets());
+                //BountyGround bg = new BountyGround(getAssets());
 //                mX = intent.getIntExtra("x", 0);
 //                Log.d("x_value",Integer.toString(mX));
 //                mY = intent.getIntExtra("y", 0);
@@ -152,12 +155,18 @@ public class AutoService extends AccessibilityService {
         Log.d("hi","hi?");
     }
 
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        int type = event.getEventType();
+        if (type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
 
+        } else {
+            // Log.d(TAG, "" + event.getPackageName() + "." + event.getClassName());
+            // Log.d(TAG, "type: " + type);
+        }
     }
-
-
+    
     @Override
     public void onInterrupt() {
     }
