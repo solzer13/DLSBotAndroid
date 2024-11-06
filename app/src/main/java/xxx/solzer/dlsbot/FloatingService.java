@@ -38,8 +38,6 @@ public class FloatingService extends Service {
         // updateStatus();
         // Button stopButton = myFloatingView.findViewById(R.id.stop);
         // stopButton.setOnClickListener(this);
-        
-        get
 
         this.bounty = new BountyGround(getAssets());
         this.water = new WaterWar();
@@ -47,6 +45,7 @@ public class FloatingService extends Service {
 
     private void start() {
         this.showView();
+
     }
 
     private void stop() {}
