@@ -1,5 +1,6 @@
 package xxx.solzer.dlsbot;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,6 +9,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,17 +20,22 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int SYSTEM_ALERT_WINDOW_CODE = 1767575;
+    private static final int BIND_ACCESSIBILITY_SERVICE_CODE = 87347475;
+
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String TAG = "MainActivity";
     
-    private Toolbar toolbar;
+    private MaterialToolbar toolbar;
     private BottomNavigationView bottom_nav;
 
     public MainActivity() {
@@ -36,56 +45,36 @@ public class MainActivity extends AppCompatActivity {
             Log.e("TAG", "OpenCV initialization failed!");
         }
     }
-    
-    public static boolean isAccessibilitySettingsOn(Context mContext) {
-        int accessibilityEnabled = 0;
-        //your package /   accesibility service path/class
-        final String service = "xxx.solzer.dlsbot/xxx.solzer.dlsbot.FloatingService";
-    
-        boolean accessibilityFound = false;
+
+    private void checkPremission(){
+        if (!Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 0);
+        }
+        int accessEnabled = 0;
         try {
-            accessibilityEnabled = Settings.Secure.getInt(
-                    mContext.getApplicationContext().getContentResolver(),
-                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+            accessEnabled = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
-            Log.e(TAG, "Error finding setting, default accessibility to not found: "
-                    + e.getMessage());
+            e.printStackTrace();
         }
-        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
-    
-        if (accessibilityEnabled == 1) {
-            Log.v(TAG, "***ACCESSIBILIY IS ENABLED*** -----------------");
-            String settingValue = Settings.Secure.getString(
-                    mContext.getApplicationContext().getContentResolver(),
-                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (settingValue != null) {
-                TextUtils.SimpleStringSplitter splitter = mStringColonSplitter;
-                splitter.setString(settingValue);
-                while (splitter.hasNext()) {
-                    String accessabilityService = splitter.next();
-    
-                    Log.v(TAG, "-------------- > accessabilityService :: " + accessabilityService);
-                    if (accessabilityService.equalsIgnoreCase(service)) {
-                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
-                        return true;
-                    }
-                }
-            }
-        } else {
-            Log.v(TAG, "***ACCESSIBILIY IS DISABLED***");
+        if (accessEnabled == 0) {
+            // if not construct intent to request permission
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // request permission via start activity for result
+            startActivity(intent);
         }
-    
-        return accessibilityFound;
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.toolbar = findViewById(R.id.mainMaterialToolbar);
         this.bottom_nav = findViewById(R.id.mainBottomNavigationView);
-        
+
+        this.toolbar.setOnMenuItemClickListener(this::onToolbarItemClick);
         this.bottom_nav.setOnItemSelectedListener(this::onBottomNavClick);
         
         getSupportFragmentManager()
@@ -98,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        checkPremission();
+
+        //checkPermission(Manifest.permission.SYSTEM_ALERT_WINDOW, SYSTEM_ALERT_WINDOW_CODE);
+
         if(App.isMyServiceRunning(CommandService.class)){
             Log.d(TAG, "TRUE");
         }
@@ -105,31 +98,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "FALSE");
             //askPermission();
         }
-        //this.toolbar.setTitle("Стандартный заголовок");
-        // mToolbar.setSubtitle("Подзаголовок");
-        // mToolbar.setLogo(R.drawable.ic_launcher_foreground);
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.action_start);
-        item.setIcon(R.drawable.ic_launcher_foreground);
-        
-        if(App.isMyServiceRunning(FloatingService.class)){
-            item.setIcon(R.drawable.stop_32);
-        }
-        else {
-            item.setIcon(R.drawable.play_32);
-        }
-        
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+
+    public boolean onToolbarItemClick(MenuItem item) {
         int id = item.getItemId();
         
-        if(id == R.id.action_start){
+        if(id == R.id.btnPlay){
             if(App.isMyServiceRunning(FloatingService.class)){
                 this.onStopClick();
                 item.setIcon(R.drawable.play_32);
@@ -140,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
     
     private boolean onBottomNavClick(MenuItem item){
@@ -161,14 +135,6 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void askPermission() {
-        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        //Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS, Uri.parse("package:" + getPackageName()));
-        //startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
-    }
-    
     public void onStopClick() {
         stopService(App.floatingIntent);
     }

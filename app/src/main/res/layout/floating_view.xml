@@ -13,46 +13,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/shape">
-                
+
         <ImageButton
             android:id="@+id/btnFloatingPlay"
-            android:src="@drawable/play_24"
-            android:padding="5dp"
-            android:background="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-                
-        <ImageButton
-            android:id="@+id/btnFloatingActions"
-            android:src="@drawable/stop_24"   
-            android:padding="5dp"
-            android:background="@null"      
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-                
-        <ImageButton
-            android:id="@+id/btnFloatingLog"
-            android:src="@drawable/pause_24"  
-            android:padding="5dp"
-            android:background="@null"       
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-                
-        <ImageButton
-            android:id="@+id/btnFloatingSettings"
-            android:src="@drawable/pause_24"  
-            android:padding="5dp"
-            android:background="@null"       
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <ImageView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/play_24"
+            android:tint="@color/cardview_dark_background" />
+
+        <ImageButton
+            android:id="@+id/btnFloatingActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/stop_24"
+            android:tint="@color/cardview_dark_background" />
+
+        <ImageButton
+            android:id="@+id/btnFloatingLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/pause_24"
+            android:tint="@color/cardview_dark_background" />
+
+        <ImageButton
+            android:id="@+id/btnFloatingSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/pause_24"
+            android:tint="@color/cardview_dark_background" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/drag_indicator_24" />
+            android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/drag_indicator_24"
+            android:tint="@color/cardview_dark_background" />
     
     </LinearLayout>
     
