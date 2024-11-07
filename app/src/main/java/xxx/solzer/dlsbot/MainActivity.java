@@ -17,13 +17,17 @@ import android.provider.Settings;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String TAG = "MainActivity";
+    
     private Toolbar toolbar;
+    private BottomNavigationView bottom_nav;
 
     public MainActivity() {
         if (OpenCVLoader.initLocal()) {
@@ -80,14 +84,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.toolbar = findViewById(R.id.toolbar);
+        this.bottom_nav = findViewById(R.id.mainBottomNavigationView);
         
-        setSupportActionBar(this.toolbar);
-
+        this.bottom_nav.setOnItemSelectedListener(this::onBottomNavClick);
+        
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, new SettingsFragment())
-                .commit();
+            .beginTransaction()
+            .replace(R.id.main_container, new SettingsFragment())
+            .commit();
     }
 
     @Override
@@ -137,6 +141,24 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private boolean onBottomNavClick(MenuItem item){
+        if(item.getItemId() == R.id.btnSettings){
+            getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, new SettingsFragment())
+                .commit();
+            return true;
+        }
+        if(item.getItemId() == R.id.btnLogs){  
+            getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, new LogsMainFragment())
+                .commit();
+            return true;
+        }
+        return false;
     }
 
     private void askPermission() {

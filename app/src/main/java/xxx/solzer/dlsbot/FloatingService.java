@@ -100,7 +100,8 @@ public class FloatingService extends Service {
                             }
                         });
 
-        myFloatingView.findViewById(R.id.btnFloatingAction).setOnClickListener(this::onActionClick);
+        myFloatingView.findViewById(R.id.btnFloatingPlay).setOnClickListener(this::onActionClick);
+        myFloatingView.findViewById(R.id.btnFloatingLog).setOnClickListener(this::onLogClick);
     }
 
     private void hideView() {
@@ -128,6 +129,10 @@ public class FloatingService extends Service {
 
         getApplication().stopService(App.commandIntent);
         getApplication().stopService(App.floatingIntent);
+    }
+    
+    public void onLogClick(View v) {
+        
     }
 
     public void onActionClick(View v) {

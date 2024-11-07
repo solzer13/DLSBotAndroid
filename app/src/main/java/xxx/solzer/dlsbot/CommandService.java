@@ -57,25 +57,44 @@ public class CommandService extends AccessibilityService {
     @Subscribe(threadMode = ThreadMode.MAIN)  
     public void onEvent(OnTakeScreen event) {
         final String tag_screen = "OnTakeScreen";
+                
+        this.takeScreenshotOfWindow(
+                getRootInActiveWindow().getWindowId(),
+                getApplicationContext().getMainExecutor(),
+                new TakeScreenshotCallback() {
+                    @Override
+                    public void onSuccess(ScreenshotResult screenshotResult) {
+                        Log.d(tag_screen, "Success");
+                        Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                        App.saveBitmap(screen, "last_test.png");
+                        App.bus.post(new OnScreenTaked(screen));
+                    }
 
-        takeScreenshot(
-            Display.DEFAULT_DISPLAY,
-            getApplicationContext().getMainExecutor(),
-            new TakeScreenshotCallback() {
-                @Override
-                public void onSuccess(ScreenshotResult screenshotResult) {
-                    Log.d(tag_screen, "Success");
-                    Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                    App.saveBitmap(screen, "last_screen.png");
-                    App.bus.post(new OnScreenTaked(screen));
+                    @Override
+                    public void onFailure(int i) {
+                        Log.d(tag_screen, "Failure code is " + i);
+                    }
                 }
-
-                @Override
-                public void onFailure(int i) {
-                    Log.d(tag_screen, "Failure code is " + i);
-                }
-            }
         );
+        
+//        takeScreenshot(
+//            Display.DEFAULT_DISPLAY,
+//            getApplicationContext().getMainExecutor(),
+//            new TakeScreenshotCallback() {
+//                @Override
+//                public void onSuccess(ScreenshotResult screenshotResult) {
+//                    Log.d(tag_screen, "Success");
+//                    Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+//                    App.saveBitmap(screen, "last_screen.png");
+//                    App.bus.post(new OnScreenTaked(screen));
+//                }
+//
+//                @Override
+//                public void onFailure(int i) {
+//                    Log.d(tag_screen, "Failure code is " + i);
+//                }
+//            }
+//        );
     }
 
     @Override
@@ -160,24 +179,6 @@ public class CommandService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         //Log.d("66666666", getc);
 
-        this.takeScreenshotOfWindow(
-                getRootInActiveWindow().getWindowId(),
-                getApplicationContext().getMainExecutor(),
-                new TakeScreenshotCallback() {
-                    @Override
-                    public void onSuccess(ScreenshotResult screenshotResult) {
-                        Log.d("555555", "Success");
-                        Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                        App.saveBitmap(screen, "last_test.png");
-                        App.bus.post(new OnScreenTaked(screen));
-                    }
-
-                    @Override
-                    public void onFailure(int i) {
-                        Log.d("555555", "Failure code is " + i);
-                    }
-                }
-        );
         int type = event.getEventType();
         if (type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
 
