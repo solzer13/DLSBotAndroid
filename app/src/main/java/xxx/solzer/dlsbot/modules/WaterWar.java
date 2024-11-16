@@ -1,4 +1,4 @@
-package xxx.solzer.dlsbot;
+package xxx.solzer.dlsbot.modules;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -8,6 +8,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+
+import xxx.solzer.dlsbot.App;
+import xxx.solzer.dlsbot.CommandService;
+import xxx.solzer.dlsbot.Module;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
@@ -30,7 +34,8 @@ public class WaterWar extends Module {
     
     private boolean match_started = false;
     private boolean exit = false;
-    
+
+    @Override
     public void run(CommandService.StateToken state) {
         this.exit = false;
         this.match_started = false;
@@ -57,18 +62,24 @@ public class WaterWar extends Module {
         
         App.bus.post(new OnUserLog("Война за воду закончилась"));
     }
-    
+
+    @Override
     public String getKey(){
         return KEY;
     }
-    
+
+    @Override
+    public String getTag() {
+        return TAG;
+    }
+
     private void startMatchChain(Mat mat){
         
-        Point baner_ww_loc = findBanerWW(mat);
+        Point banner_ww_loc = findBanerWW(mat);
         
-        if(baner_ww_loc != null){
+        if(banner_ww_loc != null){
             App.bus.post(new OnUserLog("Жмем банер \"Война за воду\""));
-            App.bus.post(new OnTap(baner_ww_loc));
+            App.bus.post(new OnTap(banner_ww_loc));
             return;
         }
         

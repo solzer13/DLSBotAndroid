@@ -23,9 +23,12 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+
+import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
 import xxx.solzer.dlsbot.modules.Help;
 import xxx.solzer.dlsbot.modules.Police;
+import xxx.solzer.dlsbot.modules.WaterWar;
 
 public class App extends Application {
     
@@ -66,6 +69,10 @@ public class App extends Application {
         
         bus.register(userLog);
         bus.register(modules);
+    }
+
+    public static void sleep(int millis){
+        try{Thread.sleep(millis);}catch(Exception e){}
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {

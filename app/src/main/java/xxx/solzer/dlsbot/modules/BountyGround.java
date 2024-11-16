@@ -1,4 +1,4 @@
-package xxx.solzer.dlsbot;
+package xxx.solzer.dlsbot.modules;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -17,6 +17,9 @@ import org.opencv.imgproc.Imgproc;
 import java.io.IOException;
 import java.io.InputStream;
 
+import xxx.solzer.dlsbot.App;
+import xxx.solzer.dlsbot.CommandService;
+import xxx.solzer.dlsbot.Module;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
@@ -102,11 +105,17 @@ public class BountyGround extends Module {
             break;
         }
     }
-    
+
+    @Override
     public String getKey(){
         return KEY;
     }
-    
+
+    @Override
+    public String getTag() {
+        return TAG;
+    }
+
     private boolean isMatchFinished(){
         Mat mat = CommandService.takeScreenMat();
         

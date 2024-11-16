@@ -19,6 +19,7 @@ public class CollectingHome extends Module {
     private static final String BTN_STEEL_FILE = "btn_steel.png";
     private static final String BTN_OIL_FILE = "btn_oil.png";
 
+    @Override
     public void run(CommandService.StateToken state) {
     
         if(App.DEBUG){
@@ -33,11 +34,17 @@ public class CollectingHome extends Module {
             try{Thread.sleep(1000);}catch(Exception e){}
         }
     }
-    
+
+    @Override
     public String getKey(){
         return KEY;
     }
-        
+
+    @Override
+    public String getTag() {
+        return TAG;
+    }
+
     private Point findTomatoesButton(Mat mat) {
         return App.findImage(mat, getAssetFilePath(BTN_TOMATOES_FILE), 1.4E7);
     }

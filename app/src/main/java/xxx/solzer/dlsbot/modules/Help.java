@@ -35,7 +35,11 @@ public class Help extends Module {
     public String getKey(){
         return KEY;
     }
-        
+
+    public String getTag() {
+        return TAG;
+    }
+
     private Point findHelpButton(Mat mat) {
         return App.findImage(mat, getAssetFilePath(BTN_HELP_FILE), 2.3E7);
     }

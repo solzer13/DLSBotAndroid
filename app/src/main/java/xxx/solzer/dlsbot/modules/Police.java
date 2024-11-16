@@ -41,7 +41,7 @@ public class Police extends Module {
         App.bus.post(new OnUserLog(TAG + ": point02"));
         
         while(state.isRunning()) {
-            try{Thread.sleep(1500);}catch(Exception e){}
+            try{Thread.sleep(1500);}catch(Exception ignored){}
             
             Mat mat = CommandService.takeScreenMat();
             
@@ -69,7 +69,11 @@ public class Police extends Module {
     public String getKey(){
         return KEY;
     }
-        
+
+    public String getTag() {
+        return TAG;
+    }
+
     private Point findSearchButton(Mat mat) {
         return App.findImage(mat, getAssetFilePath(BTN_SEARCH_FILE), 7800000);
     }
