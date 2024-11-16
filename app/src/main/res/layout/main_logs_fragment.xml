@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:textIsSelectable="true"
                 android:text="dhdhhdhdjdj"
-                android:id="@+id/log_text" />
+                android:id="@+id/mainLogText" />
 
         </HorizontalScrollView>
 

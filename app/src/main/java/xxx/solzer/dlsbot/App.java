@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import org.greenrobot.eventbus.EventBus;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
@@ -20,22 +23,23 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import xxx.solzer.dlsbot.modules.CollectingHome;
+import xxx.solzer.dlsbot.modules.Help;
+import xxx.solzer.dlsbot.modules.Police;
 
 public class App extends Application {
     
-    private static final String TAG = "dlsbot";
+    public static final String TAG = "dlsbot";
+    
+    public static final boolean DEBUG = true;
     
     private static App instance;
     
     public static EventBus bus;
-    public static Intent floatingIntent;
-    public static Intent commandIntent;
+    public static UserLog userLog;
+    public static ModuleRepository modules;
     
     public static final Scalar RED = new Scalar(255, 0, 0, 255);
-    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String LOG_FILE = "log.json";
-    public static final String SETTINGS_FILE = "settings.json";
-    public static final String TASKS_FILE = "tasks.json";
     
     public App(){
         instance = this;
@@ -50,13 +54,18 @@ public class App extends Application {
                 .sendNoSubscriberEvent(false)
                 .build();
         
-        floatingIntent = new Intent(getApplicationContext(), FloatingService.class);
-        commandIntent = new Intent(getApplicationContext(), CommandService.class);
+        userLog = new UserLog();
         
-        //bus.register(new Log(this.getFilesDir().toPath().resolve(LOG_FILE)));
-        //bus.register(new Settings(this.getFilesDir().toPath().resolve(SETTINGS_FILE)));
-        //bus.register(new Tasks(this.getFilesDir().toPath().resolve(TASKS_FILE)));
-        //bus.register(new Alarms(this.getApplicationContext()));
+        modules = new ModuleRepository(
+            new Help(),
+            new CollectingHome(),
+            new Police(),
+            new BountyGround(),
+            new WaterWar()
+        );
+        
+        bus.register(userLog);
+        bus.register(modules);
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -68,45 +77,32 @@ public class App extends Application {
         }
         return false;
     }
-
+    
+    public static Point tm_ccoeff_normed(Mat big, String small, double trashold){
+        return findImage(big, small, Imgproc.TM_CCOEFF_NORMED, trashold);
+    }
+    
     public static Point findImage(Mat big, String small, double trashold){
-        return findImage(big, small, trashold, null);
-    }
-    
-    public static Point findImage(Mat big, Mat small, double trashold){
-        return findImage(big, small, trashold, null);
-    }
-    
-    public static Point findImage(Mat big, String small, double trashold, String name){
-        try {
-            Mat mat_small = App.getAsset(small);
-            return findImage(big, mat_small, trashold);
-        
-        } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
-        }
-        
-        return null;
+        return findImage(big, App.getAsset(small), trashold);
     }
 
-    public static Point findImage(Mat big, Mat small, double trashold, String name){
+    public static Point findImage(Mat big, Mat small, double trashold){
+        return findImage(big, small, Imgproc.TM_CCOEFF, trashold);
+    }
+    
+    public static Point findImage(Mat big, String small, int type, double trashold){ 
+        return findImage(big, App.getAsset(small), type, trashold);
+    }
+
+    public static Point findImage(Mat big, Mat small, int type, double trashold){
         try {
             Mat result = new Mat();
 
-            Imgproc.matchTemplate(big, small, result, Imgproc.TM_CCOEFF);
+            Imgproc.matchTemplate(big, small, result, type);
 
             var mml = Core.minMaxLoc(result);
             var loc = mml.maxLoc;
             
-            if(name != null){
-                Log.d(TAG, name);
-                Log.d(TAG, "Min value: " + mml.minVal);
-                Log.d(TAG, "Max value: " + mml.maxVal);
-                Log.d(TAG, "Treshold: " + trashold);
-            
-                saveDebugScreen(big, small, loc, name);
-            }
-
             if(mml.maxVal > trashold){
                 return new Point(
                     loc.x + (double) (small.cols() / 2),
@@ -146,11 +142,19 @@ public class App extends Application {
         return mat;
     }
     
-    public static Mat getAsset(String file) throws IOException {
+    public static Mat getAsset(Path file) {
+        return getAsset(file.toString());
+    }
+    
+    public static Mat getAsset(String file) {
         Mat result = new Mat();
-        InputStream stream = instance.getAssets().open(file);
-        Bitmap bitmap = BitmapFactory.decodeStream(stream);
-        Utils.bitmapToMat(bitmap, result);
+        try {
+            InputStream stream = instance.getAssets().open(file);
+            Bitmap bitmap = BitmapFactory.decodeStream(stream);
+            Utils.bitmapToMat(bitmap, result);
+        } catch(Exception ex) {
+        	Log.e(TAG, ex.getMessage());
+        }
         return result;
     }
 
@@ -162,4 +166,39 @@ public class App extends Application {
         }
     }
     
+    public static boolean isScreenSupported(){
+        return isAssetDirExists(getAssetDirName());
+    }
+    
+    public static boolean isAssetDirExists(String path){
+        AssetManager manager = instance.getAssets();
+        
+        try {
+            String[] files = manager.list(path);
+            if (files.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    public static String getAssetDirName(){
+        if(getScreenWidth() > getScreenHeight()){
+            return String.valueOf(getScreenWidth()) + "x" + String.valueOf(getScreenHeight());
+        }
+        else {
+            return String.valueOf(getScreenHeight()) + "x" + String.valueOf(getScreenWidth());
+        }
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+    
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
 }

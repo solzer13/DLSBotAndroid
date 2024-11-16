@@ -3,31 +3,55 @@ package xxx.solzer.dlsbot;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
-import androidx.annotation.RequiresApi;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import android.widget.ImageButton;
+import android.widget.Toast;
+import androidx.core.os.ExecutorCompat;
+import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.opencv.core.Mat;
+import xxx.solzer.dlsbot.events.OnLoopStart;
+import xxx.solzer.dlsbot.events.OnLoopStop;
+import xxx.solzer.dlsbot.events.OnPreferencesLoaded;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
+import xxx.solzer.dlsbot.events.OnUserLog;
+import xxx.solzer.dlsbot.events.OnVisibleFloatingView;
 
 public class CommandService extends AccessibilityService {
     
     private static final String TAG = "ProcessService";
     
-    private Handler mHandler;
+    private static CommandService instance;
+    public static boolean floatingVisible = false;
+    
+    private SharedPreferences preference;
+    
+    public volatile static Bitmap screen = null;
+    
+    private StateToken state = new StateToken();
+    
+    private WindowManager mWindowManager;
+    private View myFloatingView;
 
     private int mX;
     private int mY;
@@ -35,17 +59,31 @@ public class CommandService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         App.bus.register(this);
-        HandlerThread handlerThread = new HandlerThread("auto-handler");
-        handlerThread.start();
-        mHandler = new Handler(handlerThread.getLooper());
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        myFloatingView = LayoutInflater.from(this).inflate(R.layout.floating_view, null);
     }
 
     @Override
     public void onDestroy() {
         App.bus.unregister(this);
-        Log.d(TAG,"STOPED");
         super.onDestroy();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG,"STARTED");
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+    }
+    
+    @Override
+    public void onInterrupt() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -54,153 +92,181 @@ public class CommandService extends AccessibilityService {
         tap((int)event.point.x, (int)event.point.y);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)  
-    public void onEvent(OnTakeScreen event) {
-        final String tag_screen = "OnTakeScreen";
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(OnVisibleFloatingView event) {
+        floatingVisible = event.visible;
+        if(floatingVisible){
+            showView();
+        }
+        else {
+            hideView();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEvent(OnPreferencesLoaded event) {
+        this.preference = event.preference;
+    }
+        
+    @Subscribe(threadMode = ThreadMode.ASYNC, sticky = false)
+    public void onEvent(OnLoopStart event) {
+        this.state.start();
+        var modules = App.modules.getActiveModules();
+        while(this.state.isRunning()) {
+            for(var module : modules){
+                module.run(this.state);
+                try{Thread.sleep(1000);}catch(Exception e){}
+            }
+        }
+    }
+    
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onEvent(OnLoopStop event) {
+        this.state.stop();
+    }
+     
+    public static Mat takeScreenMat(){
+        return App.BitmapToMat(takeScreenBitmap());
+    }
+    
+    public static Bitmap takeScreenBitmap(){
+        CommandService.screen = null;
+        
+        var screenId = Display.DEFAULT_DISPLAY;
+        
+        if (Build.VERSION.SDK_INT >= 34){
+            screenId = instance.getRootInActiveWindow().getWindowId();
+        }
                 
-        this.takeScreenshotOfWindow(
-                getRootInActiveWindow().getWindowId(),
-                getApplicationContext().getMainExecutor(),
+        instance.takeScreenshotOfWindow(
+                screenId,
+                Executors.newSingleThreadExecutor(),
                 new TakeScreenshotCallback() {
                     @Override
                     public void onSuccess(ScreenshotResult screenshotResult) {
-                        Log.d(tag_screen, "Success");
-                        Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                        App.saveBitmap(screen, "last_test.png");
-                        App.bus.post(new OnScreenTaked(screen));
+                        CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
                     }
 
                     @Override
                     public void onFailure(int i) {
-                        Log.d(tag_screen, "Failure code is " + i);
+                        Log.d(TAG, "Failure code is " + i);
                     }
                 }
         );
         
-//        takeScreenshot(
-//            Display.DEFAULT_DISPLAY,
-//            getApplicationContext().getMainExecutor(),
-//            new TakeScreenshotCallback() {
-//                @Override
-//                public void onSuccess(ScreenshotResult screenshotResult) {
-//                    Log.d(tag_screen, "Success");
-//                    Bitmap screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-//                    App.saveBitmap(screen, "last_screen.png");
-//                    App.bus.post(new OnScreenTaked(screen));
-//                }
-//
-//                @Override
-//                public void onFailure(int i) {
-//                    Log.d(tag_screen, "Failure code is " + i);
-//                }
-//            }
-//        );
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG,"STARTED");
-        if(intent!=null){
-            String action = intent.getStringExtra("action");
-            
-            if (action.equals("play")) {
-                //BountyGround bg = new BountyGround(getAssets());
-//                mX = intent.getIntExtra("x", 0);
-//                Log.d("x_value",Integer.toString(mX));
-//                mY = intent.getIntExtra("y", 0);
-//                if (mRunnable == null) {
-//                    mRunnable = new IntervalRunnable();
-//                }
-//                //playTap(mX,mY);
-//                //mHandler.postDelayed(mRunnable, 1000);
-//                mHandler.post(mRunnable);
-//                Toast.makeText(getBaseContext(), "Started", Toast.LENGTH_SHORT).show();
-            }
-            
-            else if(action.equals("stop")){
-                mHandler.removeCallbacksAndMessages(null);
-            }
-        }
-        return super.onStartCommand(intent, flags, startId);
+        while(CommandService.screen == null);
+        
+        return CommandService.screen;
     }
     
-    private void tap(int x, int y) {
-        Path swipePath = new Path();
-        swipePath.moveTo(x, y);
-        swipePath.lineTo(x, y);
-         GestureDescription.StrokeDescription tap =  new GestureDescription.StrokeDescription(swipePath, 0,
-         ViewConfiguration.getTapTimeout());
-         GestureDescription.Builder builder = new GestureDescription.Builder();
-         builder.addStroke(tap);
-         boolean resu = dispatchGesture(builder.build(), null, null);
-        Log.d("TAPPED",String.valueOf(resu));
+    public static boolean isFloatingVisible(){
+        return floatingVisible;
+    }
+       
+    private void showView() {
         
-     }
-    
-    //@RequiresApi(api = Build.VERSION_CODES.N)
-    private void playTap(int x, int y) {
-       Log.d("TAPPED","STARTED TAPpING");
-        try {
-            Runtime.getRuntime().exec("input tap 500 500");
-        }
-        catch(Exception e){
-            Log.e("TAPPED",e.getLocalizedMessage());
-        }
-        
-        Path swipePath = new Path();
-        swipePath.moveTo(x, y);
-        swipePath.lineTo(x, y);
-        GestureDescription.Builder gestureBuilder = new GestureDescription.Builder();
-        gestureBuilder.addStroke(new GestureDescription.StrokeDescription(swipePath, 0, 10));
-        //dispatchGesture(gestureBuilder.build(), null, null);
-        
-        Log.d("hello","hello?");
-        boolean resu = dispatchGesture(gestureBuilder.build(), new GestureResultCallback() {
-            @Override
-            public void onCompleted(GestureDescription gestureDescription) {
-                Log.d("Gesture Completed","Gesture Completed");
-                super.onCompleted(gestureDescription);
-                //mHandler.postDelayed(mRunnable, 1);
-                mHandler.post(mRunnable);
-            }
+        final WindowManager.LayoutParams params =
+                new WindowManager.LayoutParams(
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                        PixelFormat.TRANSLUCENT);
 
-            @Override
-            public void onCancelled(GestureDescription gestureDescription) {
-                Log.d("Gesture Cancelled","Gesture Cancelled");
-                super.onCancelled(gestureDescription);
-            }
-        }, null);
-        Log.d("TAPPED",String.valueOf(resu));
-        Log.d("hi","hi?");
+        
+        
+        mWindowManager.addView(myFloatingView, params);
+
+        // adding an touchlistener to make drag movement of the floating widget
+        myFloatingView
+                .findViewById(R.id.thisIsAnID)
+                .setOnTouchListener(
+                        new View.OnTouchListener() {
+                            private int initialX;
+                            private int initialY;
+                            private float initialTouchX;
+                            private float initialTouchY;
+
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                // Log.d("TOUCH","THIS IS TOUCHED");
+                                switch (event.getAction()) {
+                                    case MotionEvent.ACTION_DOWN:
+                                        initialX = params.x;
+                                        initialY = params.y;
+                                        initialTouchX = event.getRawX();
+                                        initialTouchY = event.getRawY();
+                                        return true;
+
+                                    case MotionEvent.ACTION_UP:
+                                        return true;
+
+                                    case MotionEvent.ACTION_MOVE:
+                                        // this code is helping the widget to move around the screen
+                                        // with fingers
+                                        params.x =
+                                                initialX + (int) (event.getRawX() - initialTouchX);
+                                        params.y =
+                                                initialY + (int) (event.getRawY() - initialTouchY);
+                                        mWindowManager.updateViewLayout(myFloatingView, params);
+                                        return true;
+                                }
+                                return false;
+                            }
+                        });
+
+        myFloatingView.findViewById(R.id.btnFloatingPlay).setOnClickListener(this::onActionClick);
+        //myFloatingView.findViewById(R.id.btnFloatingLog).setOnClickListener(this::onLogClick);
     }
 
+    public void onActionClick(View v) {
+        ImageButton btn = (ImageButton) v;
 
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        //Log.d("66666666", getc);
-
-        int type = event.getEventType();
-        if (type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-
+        if (this.state.isRunning()) {
+            btn.setImageResource(R.drawable.play_24);
+            App.bus.post(new OnLoopStop());
         } else {
-            // Log.d(TAG, "" + event.getPackageName() + "." + event.getClassName());
-            // Log.d(TAG, "type: " + type);
+            btn.setImageResource(R.drawable.pause_24);
+            App.bus.post(new OnLoopStart());
         }
+    }
+
+    private void hideView() {
+        mWindowManager.removeView(myFloatingView);
+    }
+
+    private void tap(int x, int y) {
+        dispatchGesture(getTapGesture(x, y), null, null);
+    }
+
+    private GestureDescription getTapGesture(int x, int y){
+        Path swipePath = new Path();
+        swipePath.moveTo(x, y);
+        swipePath.lineTo(x, y);
+        GestureDescription.StrokeDescription tap =
+                new GestureDescription.StrokeDescription(
+                        swipePath, 0, ViewConfiguration.getTapTimeout());
+        GestureDescription.Builder builder = new GestureDescription.Builder();
+        builder.addStroke(tap);
+        
+        return builder.build();
     }
     
-    @Override
-    public void onInterrupt() {
-    }
-
-
-    private IntervalRunnable mRunnable;
-
-    private class IntervalRunnable implements Runnable {
-        @Override
-        public void run() {
-            Log.d("clicked","click");
-            //tap(mX, mY);
-            playTap(mX, mY);
+    public class StateToken {
+        
+        private volatile boolean running = false;
+        
+        public boolean isRunning(){
+            return this.running;
+        }
+        
+        public void start(){
+            this.running = true;
+        }
+        
+        public void stop(){
+            this.running = false;
         }
     }
+  
 }

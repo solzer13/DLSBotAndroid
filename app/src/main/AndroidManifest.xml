@@ -23,8 +23,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".FloatingService"/>
-        
         <service
             android:exported="true"
             android:name=".CommandService"

@@ -23,33 +23,6 @@
             android:src="@drawable/play_24"
             android:tint="@color/cardview_dark_background" />
 
-        <ImageButton
-            android:id="@+id/btnFloatingActions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="5dp"
-            android:src="@drawable/stop_24"
-            android:tint="@color/cardview_dark_background" />
-
-        <ImageButton
-            android:id="@+id/btnFloatingLog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="5dp"
-            android:src="@drawable/pause_24"
-            android:tint="@color/cardview_dark_background" />
-
-        <ImageButton
-            android:id="@+id/btnFloatingSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="5dp"
-            android:src="@drawable/pause_24"
-            android:tint="@color/cardview_dark_background" />
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
