@@ -1,4 +1,4 @@
-package xxx.solzer.dlsbot;
+package xxx.solzer.dlsbot.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,6 +30,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.greenrobot.eventbus.ThreadMode;
 import org.greenrobot.eventbus.Subscribe;
 import org.opencv.android.OpenCVLoader;
+
+import xxx.solzer.dlsbot.App;
+import xxx.solzer.dlsbot.CommandService;
+import xxx.solzer.dlsbot.R;
 import xxx.solzer.dlsbot.events.OnPreferencesLoaded;
 import xxx.solzer.dlsbot.events.OnVisibleFloatingView;
 
@@ -89,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
         this.bottom_nav.setOnItemSelectedListener(this::onBottomNavClick);
         this.preferences.registerOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
 
+        if(!App.isScreenSupported()){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_info, new InfoFragment())
+                    .commit();
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_container, new SettingsFragment())
@@ -99,21 +110,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        this.toolbar.getMenu().findItem(R.id.btnPlay).setEnabled(App.isScreenSupported());
+
         App.bus.register(this);
         
         checkPremission();
         
         setActionIcon(CommandService.isFloatingVisible());
 
-        if (App.isMyServiceRunning(CommandService.class)) {
-            this.showToast("CommandService runing");
-        } else {
-            this.showToast("CommandService stoped");
-        }
-                
         App.bus.postSticky(new OnPreferencesLoaded(this.preferences));
-        
-        showToast(String.valueOf(App.isScreenSupported()));
     }
 
     @Override

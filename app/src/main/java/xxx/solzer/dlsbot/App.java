@@ -181,7 +181,6 @@ public class App extends Application {
     
     public static boolean isAssetDirExists(String path){
         AssetManager manager = instance.getAssets();
-        
         try {
             String[] files = manager.list(path);
             if (files.length > 0) {
@@ -193,7 +192,7 @@ public class App extends Application {
             return false;
         }
     }
-    
+
     public static String getAssetDirName(){
         if(getScreenWidth() > getScreenHeight()){
             return String.valueOf(getScreenWidth()) + "x" + String.valueOf(getScreenHeight());

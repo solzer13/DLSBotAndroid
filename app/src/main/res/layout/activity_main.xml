@@ -23,12 +23,19 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
+        android:id="@+id/main_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/mainAppBarLayout"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <FrameLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/mainBottomNavigationView"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mainAppBarLayout" />
+        app:layout_constraintTop_toBottomOf="@id/main_info" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainBottomNavigationView"

@@ -21,11 +21,14 @@ public class ModuleRepository {
     public void onEvent(OnPreferencesLoaded event) {
         this.preference = event.preference;
     }
-    
+
+    public Module[] getModules(){
+        return modules;
+    }
+
     public List<Module> getActiveModules(){
         var list = new ArrayList<Module>();
         for(var module : this.modules) {
-            
         	if(this.preference.getBoolean(module.getKey(), false)){
                 list.add(module);
             }

@@ -31,12 +31,34 @@ public class Sprite {
         if(point != null){
             push(point, msg);
         }
-        
-        try{Thread.sleep(sleep);}catch(Exception e){}
+
+        App.sleep(sleep);
         
         return point != null;
     }
-    
+
+    public boolean pushIfExists(Mat mat, String msg, int sleep){
+        Point point = find(mat);
+
+        if(point != null){
+            push(point, msg);
+        }
+
+        App.sleep(sleep);
+
+        return point != null;
+    }
+
+    public boolean pushIfExists(Point point, String msg, int sleep){
+        if(point != null){
+            push(point, msg);
+        }
+
+        App.sleep(sleep);
+
+        return point != null;
+    }
+
     public void push(Point point, String msg, int sleep){
         push(point, msg);
         try{Thread.sleep(sleep);}catch(Exception e){}

@@ -22,10 +22,15 @@ public class Police extends Module {
     private static final double BTN_DEPLOY_THRESHOLD = 0.98;
 
     private static final String BTN_SEARCH_FILE = "btn_search.png";
+    private static final double BTN_SEARCH_THRESHOLD = 0.98;
+
     private static final String BTN_SEARCH_YELLOW_FILE = "btn_search_yellow.png";
+    private static final double BTN_SEARCH_YELLOW_THRESHOLD = 0.98;
 
     private final Sprite btnDrone;
     private final Sprite btnDeploy;
+    private final Sprite btnSearch;
+    private final Sprite btnSearchYellow;
     
     public Police(){
         this.btnDrone = new Sprite(
@@ -38,6 +43,16 @@ public class Police extends Module {
             Imgproc.TM_CCOEFF_NORMED,
             BTN_DEPLOY_THRESHOLD
         );
+        this.btnSearch = new Sprite(
+                getAssetPath(BTN_SEARCH_FILE),
+                Imgproc.TM_CCOEFF_NORMED,
+                BTN_SEARCH_THRESHOLD
+        );
+        this.btnSearchYellow = new Sprite(
+                getAssetPath(BTN_SEARCH_YELLOW_FILE),
+                Imgproc.TM_CCOEFF_NORMED,
+                BTN_SEARCH_YELLOW_THRESHOLD
+        );
     }
     
     public void run(CommandService.StateToken state) {
@@ -45,43 +60,43 @@ public class Police extends Module {
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
-        
-        
-        Point btn_search_loc = findSearchButton(CommandService.takeScreenMat());
-        if(btn_search_loc != null){
-            App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Полицейский участок\""));
-            App.bus.post(new OnTap(btn_search_loc));
-        }
-        
-        try{Thread.sleep(1500);}catch(Exception e){}
-        
-        Point btn_search_yellow_loc = findSearchYellowButton(CommandService.takeScreenMat());
-        if(btn_search_yellow_loc != null){
-            App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Поиск\""));
-            App.bus.post(new OnTap(btn_search_yellow_loc));
-        }
-        
-        while(state.isRunning()) {
-            try{Thread.sleep(1500);}catch(Exception ignored){}
-            
-            Mat mat = CommandService.takeScreenMat();
-            
-            Point btn_ok_yellow_loc = findOkYellowButton(mat);
-            if(btn_ok_yellow_loc != null){
-                App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Ok\""));
-                App.bus.post(new OnTap(btn_ok_yellow_loc));
-                continue;
-            }
 
-            Point btn_back_loc = findBackButton(mat);
-            if(btn_back_loc != null){
-                App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Назад\""));
-                App.bus.post(new OnTap(btn_back_loc));
-                continue;
+        if(btnDrone.pushIfExists("Полицейский участок", 1500)){
+            if(btnDeploy.pushIfExists("Развернуть", 1500)){
+                while(state.isRunning()){
+                    Mat mat = CommandService.takeScreenMat();
+
+                    if(btnBack.pushIfExists(mat, "Назад", 1000)){
+                        continue;
+                    }
+
+                    if(isMainWindow(mat)){
+                        break;
+                    }
+                }
             }
-            
-            if(isMainWindow(mat)){
-                break;
+        }
+
+        if(btnSearch.pushIfExists("Полицейский участок", 1500)){
+            btnSearchYellow.pushIfExists("Поиск", 1500);
+            while(state.isRunning()) {
+                Mat mat = CommandService.takeScreenMat();
+
+                Point btn_ok_yellow_point = btnOkYellow.find(mat);
+                if(btn_ok_yellow_point != null){
+                    btnOkYellow.push(btn_ok_yellow_point, TAG + ": Жмем кнопку \"Ok\"");
+                    continue;
+                }
+
+                Point btn_back_point = btnBack.find(mat);
+                if(btn_back_point != null){
+                    btnOkYellow.push(btn_back_point, TAG + ": Жмем кнопку \"Назад\"");
+                    continue;
+                }
+
+                if(isMainWindow(mat)){
+                    break;
+                }
             }
         }
     }
@@ -93,17 +108,4 @@ public class Police extends Module {
     public String getTag() {
         return TAG;
     }
-
-    private Point findSearchButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_SEARCH_FILE), 7800000);
-    }
-    
-    private Point findSearchYellowButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_SEARCH_YELLOW_FILE), 2.5E7);
-    }
-    
-    private String getAssetFilePath(String file){
-        return App.getAssetDirName() + "/" + KEY + "/" + file;
-    }
-   
 }

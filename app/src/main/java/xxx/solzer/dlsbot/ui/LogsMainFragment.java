@@ -1,4 +1,4 @@
-package xxx.solzer.dlsbot;
+package xxx.solzer.dlsbot.ui;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,6 +6,9 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import org.greenrobot.eventbus.ThreadMode;
 import org.greenrobot.eventbus.Subscribe;
+
+import xxx.solzer.dlsbot.App;
+import xxx.solzer.dlsbot.R;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class LogsMainFragment extends Fragment {
