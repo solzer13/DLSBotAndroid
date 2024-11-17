@@ -143,8 +143,8 @@
             android:summary="Делать взносы в технологии альянса"/>
         
         <SwitchPreferenceCompat
-            android:key="switch"
-            android:enabled="false"
+            android:key="alliance_gifts"
+            android:enabled="true"
             android:title="Подарки"
             android:summary="Собирать подарки альянса"/>
         

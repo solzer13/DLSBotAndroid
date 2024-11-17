@@ -25,7 +25,7 @@ public class Sprite {
         this.trashold = trashold;
     }
     
-    public void pushIfExists(String msg, int sleep){
+    public boolean pushIfExists(String msg, int sleep){
         Point point = find();
     
         if(point != null){
@@ -33,6 +33,8 @@ public class Sprite {
         }
         
         try{Thread.sleep(sleep);}catch(Exception e){}
+        
+        return point != null;
     }
     
     public void push(Point point, String msg, int sleep){

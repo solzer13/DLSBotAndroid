@@ -2,26 +2,50 @@ package xxx.solzer.dlsbot.modules;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
+import xxx.solzer.dlsbot.Sprite;
 import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Police extends Module {
     
     private static final String TAG = "Police";
-    
     private static final String KEY = "police";
+    
+    private static final String BTN_DRONE_FILE = "btn_drone.png";
+    private static final double BTN_DRONE_THRESHOLD = 0.95;
+    
+    private static final String BTN_DEPLOY_FILE = "btn_deploy.png";
+    private static final double BTN_DEPLOY_THRESHOLD = 0.98;
 
     private static final String BTN_SEARCH_FILE = "btn_search.png";
     private static final String BTN_SEARCH_YELLOW_FILE = "btn_search_yellow.png";
 
+    private final Sprite btnDrone;
+    private final Sprite btnDeploy;
+    
+    public Police(){
+        this.btnDrone = new Sprite(
+            getAssetPath(BTN_DRONE_FILE), 
+            Imgproc.TM_CCOEFF_NORMED,
+            BTN_DRONE_THRESHOLD
+        );
+        this.btnDeploy = new Sprite(
+            getAssetPath(BTN_DEPLOY_FILE), 
+            Imgproc.TM_CCOEFF_NORMED,
+            BTN_DEPLOY_THRESHOLD
+        );
+    }
+    
     public void run(CommandService.StateToken state) {
         
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
+        
         
         Point btn_search_loc = findSearchButton(CommandService.takeScreenMat());
         if(btn_search_loc != null){
@@ -30,15 +54,12 @@ public class Police extends Module {
         }
         
         try{Thread.sleep(1500);}catch(Exception e){}
-        App.bus.post(new OnUserLog(TAG + ": point01"));
         
         Point btn_search_yellow_loc = findSearchYellowButton(CommandService.takeScreenMat());
         if(btn_search_yellow_loc != null){
             App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Поиск\""));
             App.bus.post(new OnTap(btn_search_yellow_loc));
         }
-        
-        App.bus.post(new OnUserLog(TAG + ": point02"));
         
         while(state.isRunning()) {
             try{Thread.sleep(1500);}catch(Exception ignored){}
@@ -60,7 +81,6 @@ public class Police extends Module {
             }
             
             if(isMainWindow(mat)){
-                App.bus.post(new OnUserLog(TAG + ": break"));
                 break;
             }
         }

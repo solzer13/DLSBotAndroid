@@ -32,7 +32,7 @@ public class AllianceGifts extends Module {
     private static final String BTN_CLAIM_FILE = "btn_claim.png";
     private static final double BTN_CLAIM_THRESHOLD = 0.98;
 
-    private static final String BTN_ACTIVITY_GIFTS_FILE = "btn_purchases_gifts.png";
+    private static final String BTN_ACTIVITY_GIFTS_FILE = "btn_activity_gifts.png";
     private static final double BTN_ACTIVITY_GIFTS_THRESHOLD = 0.97;
 
     private static final String BTN_PURCHASES_GIFTS_FILE = "btn_purchases_gifts.png";
@@ -87,8 +87,11 @@ public class AllianceGifts extends Module {
         this.btnAlliance.pushIfExists(getPushMsgLog("Альянс"), 1500);
         this.btnGifts.pushIfExists(getPushMsgLog("Подарки"), 1500);
         this.btnActivityGifts.pushIfExists(getPushMsgLog("Награда за активность"), 1000);
-        this.btnClaimAll.pushIfExists(getPushMsgLog("Собрать все"), 1500);
-        this.btnFreeSpace.pushIfExists(getPushMsgLog("На пустое место"), 1000);
+        
+        if(this.btnClaimAll.pushIfExists(getPushMsgLog("Собрать все"), 1500)){
+            while(!this.btnFreeSpace.pushIfExists(getPushMsgLog("На пустое место"), 1000));
+        }
+        
         this.btnPurchasesGifts.pushIfExists(getPushMsgLog("Награда за покупки"), 1000);
         while(state.isRunning()){
             Point btn_claim_point = this.btnClaim.find();
@@ -100,9 +103,14 @@ public class AllianceGifts extends Module {
             }
             App.sleep(1000);
         }
+        
         while(state.isRunning()){
-            if(!pushBack()){
-                break;
+            Point btn_home_point = btnHome.find();
+            if(btn_home_point != null) {
+            	return;
+            }
+            else {
+                while(!pushBack());
             }
         }
     }
