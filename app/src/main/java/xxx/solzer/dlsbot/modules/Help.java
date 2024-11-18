@@ -2,19 +2,35 @@ package xxx.solzer.dlsbot.modules;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
+
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
+import xxx.solzer.dlsbot.Sprite;
 import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Help extends Module {
     
     private static final String TAG = "Help";
-    
     private static final String KEY = "help";
 
-    private static final String BTN_HELP_FILE = "btn_help.png";
+    private static final String HELP_FILE = "btn_help.png";
+    private static final double HELP_THRESHOLD = 0.98;
+    private static final String HELP_NAME = "Помощь";
+
+    private final Sprite btnHelp;
+
+    public Help(){
+        this.btnHelp =
+                new Sprite(
+                        getAssetPath(HELP_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        HELP_THRESHOLD,
+                        getPushMsgLog(HELP_NAME));
+
+    }
 
     public void run(CommandService.StateToken state) {
         
@@ -22,14 +38,7 @@ public class Help extends Module {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        Mat mat = CommandService.takeScreenMat();
-            
-        Point btn_help_loc = findHelpButton(mat);
-    
-        if(btn_help_loc != null){
-            App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Помощь\""));
-            App.bus.post(new OnTap(btn_help_loc));
-        }
+        btnHelp.pushIfExists(1000);
     }
     
     public String getKey(){
@@ -39,13 +48,4 @@ public class Help extends Module {
     public String getTag() {
         return TAG;
     }
-
-    private Point findHelpButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_HELP_FILE), 2.3E7);
-    }
-
-    private String getAssetFilePath(String file){
-        return App.getAssetDirName() + "/" + KEY + "/" + file;
-    }
-   
 }

@@ -13,23 +13,29 @@ public class AllianceGifts extends Module {
     private static final String TAG = "AllianceGifts";
     private static final String KEY = "alliance_gifts";
 
-    private static final String BTN_ALLIANCE_FILE = "btn_alliance.png";
-    private static final double BTN_ALLIANCE_THRESHOLD = 0.98;
+    private static final String ALLIANCE_FILE = "btn_alliance.png";
+    private static final double ALLIANCE_THRESHOLD = 0.98;
+    private static final String ALLIANCE_NAME = "Альянс";
 
-    private static final String BTN_GIFTS_FILE = "btn_gifts.png";
-    private static final double BTN_GIFTS_THRESHOLD = 0.98;
+    private static final String GIFTS_FILE = "btn_gifts.png";
+    private static final double GIFTS_THRESHOLD = 0.98;
+    private static final String GIFTS_NAME = "Подарки";
 
-    private static final String BTN_CLAIM_ALL_FILE = "btn_claim_all.png";
-    private static final double BTN_CLAIM_ALL_THRESHOLD = 0.98;
+    private static final String CLAIM_ALL_FILE = "btn_claim_all.png";
+    private static final double CLAIM_ALL_THRESHOLD = 0.98;
+    private static final String CLAIM_ALL_NAME = "Собрать все";
 
-    private static final String BTN_CLAIM_FILE = "btn_claim.png";
-    private static final double BTN_CLAIM_THRESHOLD = 0.98;
+    private static final String CLAIM_FILE = "btn_claim.png";
+    private static final double CLAIM_THRESHOLD = 0.98;
+    private static final String CLAIM_NAME = "Получить";
 
-    private static final String BTN_ACTIVITY_GIFTS_FILE = "btn_activity_gifts.png";
-    private static final double BTN_ACTIVITY_GIFTS_THRESHOLD = 0.97;
+    private static final String ACTIVITY_GIFTS_FILE = "btn_activity_gifts.png";
+    private static final double ACTIVITY_GIFTS_THRESHOLD = 0.97;
+    private static final String ACTIVITY_GIFTS_NAME = "Награда за активность";
 
-    private static final String BTN_PURCHASES_GIFTS_FILE = "btn_purchases_gifts.png";
-    private static final double BTN_PURCHASES_GIFTS_THRESHOLD = 0.97;
+    private static final String PURCHASES_GIFTS_FILE = "btn_purchases_gifts.png";
+    private static final double PURCHASES_GIFTS_THRESHOLD = 0.97;
+    private static final String PURCHASES_GIFTS_NAME = "Награда за покупки";
     
     private final Sprite btnAlliance;
     private final Sprite btnGifts;
@@ -43,39 +49,45 @@ public class AllianceGifts extends Module {
 
         this.btnAlliance =
                 new Sprite(
-                        getAssetPath(BTN_ALLIANCE_FILE),
+                        getAssetPath(ALLIANCE_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_ALLIANCE_THRESHOLD);
+                        ALLIANCE_THRESHOLD,
+                        getPushMsgLog(ALLIANCE_NAME));
 
         this.btnGifts =
                 new Sprite(
-                        getAssetPath(BTN_GIFTS_FILE),
+                        getAssetPath(GIFTS_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_GIFTS_THRESHOLD);
+                        GIFTS_THRESHOLD,
+                        getPushMsgLog(GIFTS_NAME));
 
         this.btnClaimAll =
                 new Sprite(
-                        getAssetPath(BTN_CLAIM_ALL_FILE),
+                        getAssetPath(CLAIM_ALL_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_CLAIM_ALL_THRESHOLD);
+                        CLAIM_ALL_THRESHOLD,
+                        getPushMsgLog(CLAIM_ALL_NAME));
 
         this.btnClaim =
                 new Sprite(
-                        getAssetPath(BTN_CLAIM_FILE),
+                        getAssetPath(CLAIM_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_CLAIM_THRESHOLD);
+                        CLAIM_THRESHOLD,
+                        getPushMsgLog(CLAIM_NAME));
 
         this.btnActivityGifts =
                 new Sprite(
-                        getAssetPath(BTN_ACTIVITY_GIFTS_FILE),
+                        getAssetPath(ACTIVITY_GIFTS_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_ACTIVITY_GIFTS_THRESHOLD);
+                        ACTIVITY_GIFTS_THRESHOLD,
+                        getPushMsgLog(ACTIVITY_GIFTS_NAME));
 
         this.btnPurchasesGifts =
                 new Sprite(
-                        getAssetPath(BTN_PURCHASES_GIFTS_FILE),
+                        getAssetPath(PURCHASES_GIFTS_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BTN_PURCHASES_GIFTS_THRESHOLD);
+                        PURCHASES_GIFTS_THRESHOLD,
+                        getPushMsgLog(PURCHASES_GIFTS_NAME));
     }
 
     public void run(CommandService.StateToken state) {
@@ -84,21 +96,21 @@ public class AllianceGifts extends Module {
             logUserMsg("Start");
         }
 
-        this.btnAlliance.pushIfExists(getPushMsgLog("Альянс"), 1500);
-        this.btnGifts.pushIfExists(getPushMsgLog("Подарки"), 1500);
-        this.btnActivityGifts.pushIfExists(getPushMsgLog("Награда за активность"), 1000);
+        this.btnAlliance.pushIfExists(1500);
+        this.btnGifts.pushIfExists(1500);
+        this.btnActivityGifts.pushIfExists(1000);
 
-        if (this.btnClaimAll.pushIfExists(getPushMsgLog("Собрать все"), 1500)) {
+        if (this.btnClaimAll.pushIfExists(1500)) {
             while (state.isRunning()) {
-                if (this.btnFreeSpace.pushIfExists(getPushMsgLog("На пустое место"), 1000)) {
+                if (this.btnFreeSpace.pushIfExists(1000)) {
                     break;
                 }
             }
         }
 
-        if (this.btnPurchasesGifts.pushIfExists(getPushMsgLog("Награда за покупки"), 1000)) {
+        if (this.btnPurchasesGifts.pushIfExists(1000)) {
             while (state.isRunning()) {
-                if (!this.btnClaim.pushIfExists(getPushMsgLog("Получить"), 300)) {
+                if (!this.btnClaim.pushIfExists(300)) {
                     break;
                 }
             }
@@ -109,7 +121,7 @@ public class AllianceGifts extends Module {
                 return;
             } else {
                 while (state.isRunning()) {
-                    this.btnBack.pushIfExists(getPushMsgLog("Назад"), 1000);
+                    this.btnBack.pushIfExists(1000);
                 }
             }
         }

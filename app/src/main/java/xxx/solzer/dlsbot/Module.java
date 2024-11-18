@@ -2,6 +2,8 @@ package xxx.solzer.dlsbot;
 
 import android.graphics.Bitmap;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
@@ -89,11 +91,11 @@ public abstract class Module {
     }
 
     protected Path getAssetPath(String file_name) {
-        return Path.of(App.getAssetDirName()).resolve(getKey()).resolve(file_name);
+        return Paths.get(App.getAssetDirName()).resolve(getKey()).resolve(file_name);
     }
 
     protected Path getAssetRootPath(String file_name) {
-        return Path.of(App.getAssetDirName()).resolve(file_name);
+        return Paths.get(App.getAssetDirName()).resolve(file_name);
     }
 
     private String getAssetFilePath(String file) {

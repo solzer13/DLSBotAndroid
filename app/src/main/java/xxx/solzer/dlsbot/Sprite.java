@@ -77,7 +77,11 @@ public class Sprite {
     public boolean isFound(){
         return find() != null;
     }
-    
+
+    public boolean isFound(Mat mat){
+        return find(mat) != null;
+    }
+
     public Point find(){
         return find(CommandService.takeScreenMat());
     }
