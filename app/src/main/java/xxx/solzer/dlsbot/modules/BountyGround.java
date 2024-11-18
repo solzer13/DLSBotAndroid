@@ -20,94 +20,127 @@ import java.io.InputStream;
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
+import xxx.solzer.dlsbot.Sprite;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class BountyGround extends Module {
-    
+
     private static final String TAG = "BountyGround";
-    
     private static final String KEY = "bounty";
 
-    private static final String BTN_CAMPAIGN_FILE = "btn_campaign.png";
-    private static final String BTN_BOUNTY_FILE = "btn_bg.png";
-    private static final String BTN_MATCH_FILE = "btn_match.png";
-    private static final String BTN_CHANCEL_FILE = "btn_chancel.png";
-    private static final String BG_PROCESS_FILE = "bg_process.png";
-    private static final String BG_SELECTION_FILE = "bg_selection.png";
-    
+    private static final String CAMPAIGN_FILE = "btn_campaign.png";
+    private static final double CAMPAIGN_THRESHOLD = 0.98;
+    private static final String CAMPAIGN_NAME = "Компании";
+
+    private static final String BOUNTY_FILE = "btn_bg.png";
+    private static final double BOUNTY_THRESHOLD = 0.98;
+    private static final String BOUNTY_NAME = "Охота за призом";
+
+    private static final String MATCH_FILE = "btn_match.png";
+    private static final double MATCH_THRESHOLD = 0.98;
+    private static final String MATCH_NAME = "Матч";
+
+    private static final String CHANCEL_FILE = "btn_chancel.png";
+    private static final double CHANCEL_THRESHOLD = 0.98;
+    private static final String CHANCEL_NAME = "Отмена";
+
+    private static final String PROCESS_FILE = "bg_process.png";
+    private static final double PROCESS_THRESHOLD = 0.98;
+
+    private static final String SELECTION_FILE = "bg_selection.png";
+    private static final double SELECTION_THRESHOLD = 0.98;
+
+    private final Sprite btnCampaign;
+    private final Sprite btnBounty;
+    private final Sprite btnMatch;
+    private final Sprite btnChancel;
+    private final Sprite wndProcess;
+    private final Sprite wndSelection;
+
+    public BountyGround() {
+
+        this.btnCampaign =
+                new Sprite(
+                        getAssetPath(CAMPAIGN_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CAMPAIGN_THRESHOLD,
+                        getPushMsgLog(CAMPAIGN_NAME));
+
+        this.btnBounty =
+                new Sprite(
+                        getAssetPath(BOUNTY_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        BOUNTY_THRESHOLD,
+                        getPushMsgLog(BOUNTY_NAME));
+
+        this.btnMatch =
+                new Sprite(
+                        getAssetPath(MATCH_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        MATCH_THRESHOLD,
+                        getPushMsgLog(MATCH_NAME));
+
+        this.btnChancel =
+                new Sprite(
+                        getAssetPath(CHANCEL_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CHANCEL_THRESHOLD,
+                        getPushMsgLog(CHANCEL_NAME));
+
+        this.wndProcess =
+                new Sprite(getAssetPath(PROCESS_FILE), Imgproc.TM_CCOEFF_NORMED, PROCESS_THRESHOLD);
+
+        this.wndSelection =
+                new Sprite(
+                        getAssetPath(SELECTION_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        SELECTION_THRESHOLD);
+    }
+
     public void run(CommandService.StateToken state) {
-        
-        if(App.DEBUG){
+
+        if (App.DEBUG) {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
-        
-        if(!isMatchFinished()){
-            return;
-        }
-        
-        try{Thread.sleep(1000);}catch(Exception e){}
-        
-        pushButton(
-            findCampaignButton(CommandService.takeScreenMat()),
-            "Компании"
-        );
-        
-        try{Thread.sleep(1500);}catch(Exception e){}
-            
-        pushButton(
-            findBountyGroundButton(CommandService.takeScreenMat()),
-            "Охота за призом"
-        );
-        
-        try{Thread.sleep(1500);}catch(Exception e){}
-            
-        pushButton(
-            findMatchButton(CommandService.takeScreenMat()),
-            "Начало матча"
-        );
-        
-        try{Thread.sleep(1000);}catch(Exception e){}
-        
-        while(state.isRunning()) {
-            try{Thread.sleep(1000);}catch(Exception e){}
-            
-            Mat mat = CommandService.takeScreenMat();
-            
-            Point btn_back_loc = findBackButton(mat);
-            if(btn_back_loc != null){
-                App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Назад\""));
-                App.bus.post(new OnTap(btn_back_loc));
-                continue;
+
+        Mat mat = CommandService.takeScreenMat();
+
+        if (wndProcess.find(mat) == null
+                && wndSelection.find(mat) == null
+                && btnCampaign.find(mat) != null) {
+            App.sleep(1000);
+
+            if (btnCampaign.pushIfExists(mat, 1500)) {
+                if (btnBounty.pushIfExists(1500)) {
+                    btnMatch.pushIfExists(1000);
+                }
             }
-            
-            Point btn_chancel_loc = findChancelButton(mat);
-            if(btn_chancel_loc != null){
-                App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Отмена\""));
-                App.bus.post(new OnTap(btn_chancel_loc));
-                continue;
+
+            while (state.isRunning()) {
+                mat = CommandService.takeScreenMat();
+
+                if (btnBack.pushIfExists(mat, 1000)) {
+                    continue;
+                }
+                if(btnChancel.pushIfExists(mat, 1000)){
+                    continue;
+                }
+                if(btnHome.pushIfExists(mat, 1000)){
+                    continue;
+                }
+                if(wndSelection.find(mat) != null){
+                    continue;
+                }
+                break;
             }
-            
-            Point btn_home_loc = findHomeButton(mat);
-            if(btn_home_loc != null){
-                App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"Убежище\""));
-                App.bus.post(new OnTap(btn_home_loc));
-                continue;
-            }
-            
-            Point bg_selection_loc = findSelectionWindow(mat);
-            if(bg_selection_loc != null){
-                continue;
-            }
-            
-            break;
         }
     }
 
     @Override
-    public String getKey(){
+    public String getKey() {
         return KEY;
     }
 
@@ -115,54 +148,4 @@ public class BountyGround extends Module {
     public String getTag() {
         return TAG;
     }
-
-    private boolean isMatchFinished(){
-        Mat mat = CommandService.takeScreenMat();
-        
-        Point btn_campaing_loc = findCampaignButton(mat);
-        Point bg_selection_loc = findSelectionWindow(mat);
-        Point bg_process_loc = findProcessWindow(mat);
-        
-        return 
-            bg_selection_loc == null &&
-            bg_process_loc == null &&
-            btn_campaing_loc != null;
-    }
-    
-    private boolean pushButton(Point point, String name){
-        if(point != null){
-            App.bus.post(new OnUserLog(TAG + ": Жмем кнопку \"" + name + "\""));
-            App.bus.post(new OnTap(point));
-        }
-        return point != null;
-    }
-
-    private Point findCampaignButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_CAMPAIGN_FILE), 3E7);
-    }
-    
-    private Point findBountyGroundButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_BOUNTY_FILE), 1E8);
-    }
-    
-    private Point findMatchButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_MATCH_FILE), 4E7);
-    }
-    
-    private Point findChancelButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_CHANCEL_FILE), 2.2E7);
-    }
-    
-    private Point findSelectionWindow(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BG_SELECTION_FILE), 8.5E7);
-    }
-    
-    private Point findProcessWindow(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BG_PROCESS_FILE), 7.6E7);
-    }
-
-    private String getAssetFilePath(String file){
-        return App.getAssetDirName() + "/" + KEY + "/" + file;
-    }
-   
 }

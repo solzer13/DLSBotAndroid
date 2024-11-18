@@ -19,58 +19,59 @@ public class Sprite {
     
     private final int type;
     
+    private String logMessage;
+    
     public Sprite(Path file, int type, double trashold){
         this.path = file;
         this.type = type;
         this.trashold = trashold;
     }
     
-    public boolean pushIfExists(String msg, int sleep){
+    public Sprite(Path file, int type, double trashold, String msg){
+        this(file, type, trashold);
+        this.logMessage = msg;
+    }
+    
+    public void setLogMessage(String msg){
+        this.logMessage = msg;
+    }
+    
+    public boolean pushIfExists(int sleep){
         Point point = find();
-    
         if(point != null){
-            push(point, msg);
+            push(point);
         }
-
         App.sleep(sleep);
-        
         return point != null;
     }
 
-    public boolean pushIfExists(Mat mat, String msg, int sleep){
+    public boolean pushIfExists(Mat mat, int sleep){
         Point point = find(mat);
-
         if(point != null){
-            push(point, msg);
+            push(point);
+            App.sleep(sleep);
         }
-
-        App.sleep(sleep);
-
         return point != null;
     }
 
-    public boolean pushIfExists(Point point, String msg, int sleep){
+    public boolean pushIfExists(Point point, int sleep){
         if(point != null){
-            push(point, msg);
+            push(point);
+            App.sleep(sleep);
         }
-
-        App.sleep(sleep);
-
         return point != null;
     }
 
-    public void push(Point point, String msg, int sleep){
-        push(point, msg);
-        try{Thread.sleep(sleep);}catch(Exception e){}
-    }
-    
-    public void push(Point point, String msg){
+    public void push(Point point, int sleep){
         push(point);
-        App.bus.post(new OnUserLog(msg));
+        App.sleep(sleep);
     }
     
     public void push(Point point){
         App.bus.post(new OnTap(point));
+        if(this.logMessage != null){
+            App.bus.post(new OnUserLog(this.logMessage));
+        }
     }
     
     public boolean isFound(){
@@ -79,6 +80,12 @@ public class Sprite {
     
     public Point find(){
         return find(CommandService.takeScreenMat());
+    }
+    
+    public Point find(int sleep){
+        Point point = find();
+        App.sleep(sleep);
+        return point;
     }
     
     public Point find(Mat mat){

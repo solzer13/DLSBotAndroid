@@ -10,21 +10,26 @@ import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public abstract class Module {
-    
-    private static final String BTN_HOME_FILE = "btn_home.png";
-    private static final double BTN_HOME_THRESHOLD = 0.98;
-    
-    private static final String BTN_REGION_FILE = "btn_region.png";
-    private static final double BTN_REGION_THRESHOLD = 0.98;
-    
-    private static final String BTN_BACK_FILE = "btn_back.png";
-    private static final double BTN_BACK_THRESHOLD = 0.98;
-    
-    private static final String BTN_OK_YELLOW_FILE = "btn_ok_yellow.png";
-    private static final double BTN_OK_YELLOW_THRESHOLD = 0.98;
-    
-    private static final String BTN_FREE_SPACE_FILE = "btn_free_space.png";
-    private static final double BTN_FREE_SPACE_THRESHOLD = 0.77;
+
+    private static final String HOME_FILE = "btn_home.png";
+    private static final double HOME_THRESHOLD = 0.98;
+    private static final String HOME_NAME = "Убежище";
+
+    private static final String REGION_FILE = "btn_region.png";
+    private static final double REGION_THRESHOLD = 0.98;
+    private static final String REGION_NAME = "Регион";
+
+    private static final String BACK_FILE = "btn_back.png";
+    private static final double BACK_THRESHOLD = 0.98;
+    private static final String BACK_NAME = "Назад";
+
+    private static final String OK_YELLOW_FILE = "btn_ok_yellow.png";
+    private static final double OK_YELLOW_THRESHOLD = 0.98;
+    private static final String OK_YELLOW_NAME = "Ok";
+
+    private static final String FREE_SPACE_FILE = "btn_free_space.png";
+    private static final double FREE_SPACE_THRESHOLD = 0.77;
+    private static final String FREE_SPACE_NAME = "Пустое место";
 
     protected final Sprite btnHome;
     protected final Sprite btnRegion;
@@ -32,85 +37,66 @@ public abstract class Module {
     protected final Sprite btnOkYellow;
     protected final Sprite btnFreeSpace;
 
-    public Module(){
-        this.btnHome = new Sprite(
-                getAssetRootPath(BTN_HOME_FILE),
-                Imgproc.TM_CCOEFF_NORMED,
-                BTN_HOME_THRESHOLD
-        );
-        this.btnRegion = new Sprite(
-                getAssetRootPath(BTN_REGION_FILE),
-                Imgproc.TM_CCOEFF_NORMED,
-                BTN_REGION_THRESHOLD
-        );
-        this.btnBack = new Sprite(
-                getAssetRootPath(BTN_BACK_FILE),
-                Imgproc.TM_CCOEFF_NORMED,
-                BTN_BACK_THRESHOLD
-        );
-        this.btnOkYellow = new Sprite(
-                getAssetRootPath(BTN_OK_YELLOW_FILE),
-                Imgproc.TM_CCOEFF_NORMED,
-                BTN_OK_YELLOW_THRESHOLD
-        );
-        this.btnFreeSpace = new Sprite(
-                getAssetRootPath(BTN_FREE_SPACE_FILE),
-                Imgproc.TM_CCOEFF_NORMED,
-                BTN_FREE_SPACE_THRESHOLD
-        );
+    public Module() {
+        this.btnHome =
+                new Sprite(
+                        getAssetRootPath(HOME_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        HOME_THRESHOLD,
+                        HOME_NAME);
+        this.btnRegion =
+                new Sprite(
+                        getAssetRootPath(REGION_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        REGION_THRESHOLD,
+                        REGION_NAME);
+        this.btnBack =
+                new Sprite(
+                        getAssetRootPath(BACK_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        BACK_THRESHOLD,
+                        BACK_NAME);
+        this.btnOkYellow =
+                new Sprite(
+                        getAssetRootPath(OK_YELLOW_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        OK_YELLOW_THRESHOLD,
+                        OK_YELLOW_NAME);
+        this.btnFreeSpace =
+                new Sprite(
+                        getAssetRootPath(FREE_SPACE_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        FREE_SPACE_THRESHOLD,
+                        FREE_SPACE_NAME);
     }
 
     public abstract void run(CommandService.StateToken state);
-       
+
     public abstract String getKey();
+
     public abstract String getTag();
-    
-    protected boolean isMainWindow(Mat mat){
-        return (findRegionButton(mat) != null);
-    }
 
-    protected boolean pushBack(){
-        return btnBack.pushIfExists("Назад", 1000);
-    }
-
-    protected Point findHomeButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_HOME_FILE), 1E8);
-    }
-    
-    protected Point findRegionButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_REGION_FILE), 9.1E7);
-    }
-    
-    protected Point findBackButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_BACK_FILE), 3.4E7);
-    }
-    
-    protected Point findOkYellowButton(Mat mat) {
-        return App.findImage(mat, getAssetFilePath(BTN_OK_YELLOW_FILE), 1.3E7);
-    }
-    
-    protected String getPushMsgLog(String button_name){
+    protected String getPushMsgLog(String button_name) {
         return getMsgLog("Жмем кнопку \"" + button_name + "\"");
     }
-    
-    protected String getMsgLog(String msg){
+
+    protected String getMsgLog(String msg) {
         return getTag() + ": " + msg;
     }
-    
+
     protected void logUserMsg(String msg) {
-    	App.bus.post(new OnUserLog(getMsgLog(msg)));
+        App.bus.post(new OnUserLog(getMsgLog(msg)));
     }
-        
-    protected Path getAssetPath(String file_name){
+
+    protected Path getAssetPath(String file_name) {
         return Path.of(App.getAssetDirName()).resolve(getKey()).resolve(file_name);
     }
-   
-    protected Path getAssetRootPath(String file_name){
+
+    protected Path getAssetRootPath(String file_name) {
         return Path.of(App.getAssetDirName()).resolve(file_name);
     }
-    
-    private String getAssetFilePath(String file){
-        return App.getAssetDirName()+ "/" + file;
+
+    private String getAssetFilePath(String file) {
+        return App.getAssetDirName() + "/" + file;
     }
-     
 }

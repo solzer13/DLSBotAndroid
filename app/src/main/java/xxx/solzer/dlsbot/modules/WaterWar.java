@@ -9,9 +9,11 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
+import org.opencv.imgproc.Imgproc;
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
+import xxx.solzer.dlsbot.Sprite;
 import xxx.solzer.dlsbot.events.OnScreenTaked;
 import xxx.solzer.dlsbot.events.OnTakeScreen;
 import xxx.solzer.dlsbot.events.OnTap;
@@ -22,27 +24,103 @@ public class WaterWar extends Module {
     private static final String TAG = "WaterWar";
     private static final String KEY = "water";
     
-    private static final String BANER_WW_FILE = "baner_ww.png";
-    private static final String BTN_WW_light_FILE = "btn_ww_light.png";
-    private static final String BTN_WW_dark_FILE = "btn_ww_dark.png";
-    private static final String BTN_WW_PICK_FILE = "btn_ww_pick.png";
-    private static final String BTN_WW_READY_FILE = "btn_ww_ready.png";
-    private static final String BG_WW_VS_FILE = "bg_ww_vs.png";
-    private static final String BG_WW_END_FILE = "bg_ww_end.png";
-    private static final String BTN_WW_SKIP_FILE = "btn_ww_skip.png";
-    private static final String BTN_WW_EXIT_FILE = "btn_ww_exit.png";
+    private static final String BANER_FILE = "baner_ww.png";
+    private static final double BANER_THRESHOLD = 0.98;
+    private static final String BANER_NAME = "Банер";
     
-    private boolean match_started = false;
-    private boolean exit = false;
+    private static final String WATER_LIGHT_FILE = "btn_ww_light.png";
+    private static final double WATER_LIGHT_THRESHOLD = 0.98;
+    private static final String WATER_LIGHT_NAME = "Война за воду";
+    
+    private static final String WATER_DARK_FILE = "btn_ww_dark.png";
+    private static final double WATER_DARK_THRESHOLD = 0.98;
+    private static final String WATER_DARK_NAME = "Война за воду";
+    
+    private static final String PICK_FILE = "btn_ww_pick.png";
+    private static final double PICK_THRESHOLD = 0.98;
+    private static final String PICK_NAME = "baner_ww.png";
+    
+    private static final String READY_FILE = "btn_ww_ready.png";
+    private static final double READY_THRESHOLD = 0.98;
+    private static final String READY_NAME = "baner_ww.png";
+    
+    private static final String VS_FILE = "bg_ww_vs.png";
+    private static final double VS_THRESHOLD = 0.98;
+    private static final String VS_NAME = "baner_ww.png";
+    
+    private static final String END_FILE = "bg_ww_end.png";
+    private static final double END_THRESHOLD = 0.98;
+    private static final String END_NAME = "baner_ww.png";
+    
+    private static final String SKIP_FILE = "btn_ww_skip.png";
+    private static final double SKIP_THRESHOLD = 0.98;
+    private static final String SKIP_NAME = "baner_ww.png";
+    
+    private static final String EXIT_FILE = "btn_ww_exit.png";
+    private static final double EXIT_THRESHOLD = 0.98;
+    private static final String EXIT_NAME = "baner_ww.png";
+    
+    private final Sprite btnBaner;
+    private final Sprite btnWaterLight;
+    private final Sprite btnWaterDark;
+    private final Sprite btnPick;
+    
+    public WaterWar() {
+        this.btnBaner =
+                new Sprite(
+                        getAssetPath(BANER_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        BANER_THRESHOLD,
+                        getPushMsgLog(BANER_NAME));
+        this.btnWaterDark =
+                new Sprite(
+                        getAssetPath(WATER_DARK_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        WATER_DARK_THRESHOLD,
+                        getPushMsgLog(WATER_DARK_NAME));
+        this.btnWaterLight =
+                new Sprite(
+                        getAssetPath(WATER_LIGHT_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        WATER_LIGHT_THRESHOLD,
+                        getPushMsgLog(WATER_LIGHT_NAME));
+        this.btnPick =
+                new Sprite(
+                        getAssetPath(PICK_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        PICK_THRESHOLD,
+                        getPushMsgLog(PICK_NAME));
 
+    }
+    
     @Override
     public void run(CommandService.StateToken state) {
-        this.exit = false;
-        this.match_started = false;
+        if (App.DEBUG) {
+            App.bus.post(new OnUserLog(TAG + ": Start"));
+        }
         
-        App.bus.post(new OnUserLog("Война за воду началась"));
+        int counter = 0;
+        
+        while(state.isRunning()){
+            if(btnBaner.pushIfExists(1000)){
+                break;
+            }
+            if(counter > 5){
+                return;
+            }
+            counter++;
+        }
+        
+        btnWaterDark.pushIfExists(1000);
         
         Mat mat = CommandService.takeScreenMat();
+        
+        Point btn_water_light_point = btnWaterLight.find(mat);
+        Point btn_pick_point = btnPick.find(mat);
+        
+        if(btn_water_light_point != null && btn_pick_point != null){
+            btnPick.push(btn_pick_point, 1000);
+        }
         
         while(state.isRunning()){
             
@@ -111,7 +189,6 @@ public class WaterWar extends Module {
         Point bg_ww_vs_loc = findWWVSBg(mat);
         
         if(bg_ww_vs_loc != null){
-            this.match_started = true;
             App.bus.post(new OnUserLog("Матч начался"));
             App.bus.post(new OnUserLog("Ждём завершения матча..."));
             return;
@@ -156,8 +233,7 @@ public class WaterWar extends Module {
         if(btn_back_loc != null){
             App.bus.post(new OnUserLog("Жмем кнопку \"назад\""));
             App.bus.post(new OnTap(btn_back_loc));
-            this.match_started = false;
-            this.exit = true;
+
             return;
         }
     }
