@@ -24,3 +24,13 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew app:build
+    - name: Artifact naming
+      run: |
+        artifact="${{github.repository_owner}} ${{github.ref_name}}"
+        artifact="${artifact//\//-}" # replace slashes
+        echo "artifact=${artifact}" >> $GITHUB_ENV
+    - name: Upload debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{env.artifact}} debug_apk"
+        path: app/build/outputs/apk/debug/*.apk
