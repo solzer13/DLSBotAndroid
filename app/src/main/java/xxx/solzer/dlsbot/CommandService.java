@@ -132,27 +132,41 @@ public class CommandService extends AccessibilityService {
     public static Bitmap takeScreenBitmap(){
         CommandService.screen = null;
         
-        var screenId = Display.DEFAULT_DISPLAY;
-        
         if (Build.VERSION.SDK_INT >= 34){
-            screenId = instance.getRootInActiveWindow().getWindowId();
+            instance.takeScreenshotOfWindow(
+                    instance.getRootInActiveWindow().getWindowId(),
+                    Executors.newSingleThreadExecutor(),
+                    new TakeScreenshotCallback() {
+                        @Override
+                        public void onSuccess(ScreenshotResult screenshotResult) {
+                            CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                        }
+    
+                        @Override
+                        public void onFailure(int i) {
+                            Log.d(TAG, "Failure code is " + i);
+                        }
+                    }
+            );
         }
-                
-        instance.takeScreenshotOfWindow(
-                screenId,
-                Executors.newSingleThreadExecutor(),
-                new TakeScreenshotCallback() {
-                    @Override
-                    public void onSuccess(ScreenshotResult screenshotResult) {
-                        CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+        else { 
+            instance.takeScreenshot(
+                    Display.DEFAULT_DISPLAY,
+                    Executors.newSingleThreadExecutor(),
+                    new TakeScreenshotCallback() {
+                        @Override
+                        public void onSuccess(ScreenshotResult screenshotResult) {
+                            CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                        }
+    
+                        @Override
+                        public void onFailure(int i) {
+                            Log.d(TAG, "Failure code is " + i);
+                        }
                     }
+            );
+        }
 
-                    @Override
-                    public void onFailure(int i) {
-                        Log.d(TAG, "Failure code is " + i);
-                    }
-                }
-        );
         
         while(CommandService.screen == null);
         
