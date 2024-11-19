@@ -13,8 +13,8 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class WaterWar extends Module {
     
-    private static final String TAG = "WaterWar";
-    private static final String KEY = "water";
+    public static final String TAG = "WaterWar";
+    public static final String KEY = "water";
     
     private static final String BANNER_FILE = "baner_ww.png";
     private static final double BANNER_THRESHOLD = 0.98;
@@ -37,7 +37,7 @@ public class WaterWar extends Module {
     private static final String READY_NAME = "Готово";
     
     private static final String VS_FILE = "bg_ww_vs.png";
-    private static final double VS_THRESHOLD = 0.98;
+    private static final double VS_THRESHOLD = 0.9;
     
     private static final String END_FILE = "bg_ww_end.png";
     private static final double END_THRESHOLD = 0.98;
@@ -142,7 +142,7 @@ public class WaterWar extends Module {
         if(btnPick.pushIfExists(mat, 1000)){
             while(state.isRunning()){
                 mat = CommandService.takeScreenMat();
-                if(!btnReady.pushIfExists(mat,1000)){
+                if(btnReady.pushIfExists(mat,1000)){
                     continue;
                 }
                 if(btnVS.isFound(mat)){
@@ -163,7 +163,7 @@ public class WaterWar extends Module {
             }
             while(state.isRunning()){
                 mat = CommandService.takeScreenMat();
-                if(btnFreeSpace.pushIfExists(mat, 1000)){
+                if(wndEnd.pushIfExists(mat, 1000)){
                     continue;
                 }
                 if(btnSkip.pushIfExists(mat, 1000)){

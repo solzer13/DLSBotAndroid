@@ -45,31 +45,31 @@ public abstract class Module {
                         getAssetRootPath(HOME_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         HOME_THRESHOLD,
-                        HOME_NAME);
+                        getPushMsgLog(HOME_NAME));
         this.btnRegion =
                 new Sprite(
                         getAssetRootPath(REGION_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         REGION_THRESHOLD,
-                        REGION_NAME);
+                        getPushMsgLog(REGION_NAME));
         this.btnBack =
                 new Sprite(
                         getAssetRootPath(BACK_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         BACK_THRESHOLD,
-                        BACK_NAME);
+                        getPushMsgLog(BACK_NAME));
         this.btnOkYellow =
                 new Sprite(
                         getAssetRootPath(OK_YELLOW_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         OK_YELLOW_THRESHOLD,
-                        OK_YELLOW_NAME);
+                        getPushMsgLog(OK_YELLOW_NAME));
         this.btnFreeSpace =
                 new Sprite(
                         getAssetRootPath(FREE_SPACE_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         FREE_SPACE_THRESHOLD,
-                        FREE_SPACE_NAME);
+                        getPushMsgLog(FREE_SPACE_NAME));
     }
 
     public abstract void run(CommandService.StateToken state);

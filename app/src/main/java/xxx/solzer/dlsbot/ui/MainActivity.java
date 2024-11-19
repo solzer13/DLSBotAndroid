@@ -36,6 +36,7 @@ import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.R;
 import xxx.solzer.dlsbot.events.OnPreferencesLoaded;
 import xxx.solzer.dlsbot.events.OnVisibleFloatingView;
+import xxx.solzer.dlsbot.modules.BountyGround;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -87,11 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.toolbar = findViewById(R.id.mainMaterialToolbar);
         this.bottom_nav = findViewById(R.id.mainBottomNavigationView);
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         this.toolbar.setOnMenuItemClickListener(this::onToolbarItemClick);
         this.bottom_nav.setOnItemSelectedListener(this::onBottomNavClick);
-        this.preferences.registerOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
 
         if(!App.isScreenSupported()){
             getSupportFragmentManager()
@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        this.preferences.registerOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
+        
         this.toolbar.getMenu().findItem(R.id.btnPlay).setEnabled(App.isScreenSupported());
 
         App.bus.register(this);
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        this.preferences.unregisterOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
         App.bus.unregister(this);
         super.onPause();
     }

@@ -82,6 +82,10 @@ public class Sprite {
         return find(mat) != null;
     }
 
+    public boolean isFound(Mat mat, int sleep){
+        return find(mat, sleep) != null;
+    }
+
     public Point find(){
         return find(CommandService.takeScreenMat());
     }
@@ -92,6 +96,12 @@ public class Sprite {
         return point;
     }
     
+    public Point find(Mat mat, int sleep){
+        Point point = find(mat);
+        App.sleep(sleep);
+        return point;
+    }
+     
     public Point find(Mat mat){
         return findImage(mat, this.path, this.type, this.trashold);
     }

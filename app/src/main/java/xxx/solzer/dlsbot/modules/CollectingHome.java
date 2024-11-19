@@ -17,19 +17,19 @@ public class CollectingHome extends Module {
     private static final String KEY = "collecting_home";
 
     private static final String TOMATOES_FILE = "btn_tomatoes.png";
-    private static final double TOMATOES_THRESHOLD = 0.98;
+    private static final double TOMATOES_THRESHOLD = 0.9;
     private static final String TOMATOES_NAME = "Собрать помидоры";
 
     private static final String WOOD_FILE = "btn_wood.png";
-    private static final double WOOD_THRESHOLD = 0.98;
+    private static final double WOOD_THRESHOLD = 0.9;
     private static final String WOOD_NAME = "Собрать древесину";
 
     private static final String STEEL_FILE = "btn_steel.png";
-    private static final double STEEL_THRESHOLD = 0.98;
+    private static final double STEEL_THRESHOLD = 0.9;
     private static final String STEEL_NAME = "Собрать сталь";
 
     private static final String OIL_FILE = "btn_oil.png";
-    private static final double OIL_THRESHOLD = 0.98;
+    private static final double OIL_THRESHOLD = 0.9;
     private static final String OIL_NAME = "Собрать нефть";
 
     private final Sprite btnTomatoes;

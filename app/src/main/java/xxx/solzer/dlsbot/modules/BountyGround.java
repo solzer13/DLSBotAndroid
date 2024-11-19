@@ -28,8 +28,8 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class BountyGround extends Module {
 
-    private static final String TAG = "BountyGround";
-    private static final String KEY = "bounty";
+    public static final String TAG = "BountyGround";
+    public static final String KEY = "bounty";
 
     private static final String CAMPAIGN_FILE = "btn_campaign.png";
     private static final double CAMPAIGN_THRESHOLD = 0.98;
@@ -122,7 +122,7 @@ public class BountyGround extends Module {
             while (state.isRunning()) {
                 mat = CommandService.takeScreenMat();
 
-                if (btnBack.pushIfExists(mat, 1000)) {
+                if(btnBack.pushIfExists(mat, 1000)) {
                     continue;
                 }
                 if(btnChancel.pushIfExists(mat, 1000)){
@@ -131,10 +131,12 @@ public class BountyGround extends Module {
                 if(btnHome.pushIfExists(mat, 1000)){
                     continue;
                 }
-                if(wndSelection.find(mat) != null){
+                if(wndSelection.isFound(mat, 1000)){
                     continue;
                 }
-                break;
+                if(wndProcess.isFound(mat)){
+                    break;
+                }
             }
         }
     }

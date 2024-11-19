@@ -1,5 +1,6 @@
 package xxx.solzer.dlsbot.modules;
 
+import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 import xxx.solzer.dlsbot.App;
@@ -98,32 +99,41 @@ public class AllianceGifts extends Module {
 
         this.btnAlliance.pushIfExists(1500);
         this.btnGifts.pushIfExists(1500);
-        this.btnActivityGifts.pushIfExists(1000);
+        //this.btnActivityGifts.pushIfExists(1500);
 
-        if (this.btnClaimAll.pushIfExists(1500)) {
+//        if (this.btnClaimAll.pushIfExists(1500)) {
+//            while (state.isRunning()) {
+//                if (this.btnFreeSpace.pushIfExists(1500)) {
+//                    break;
+//                }
+//            }
+//        }
+
+        if (this.btnActivityGifts.pushIfExists(1500)) {
             while (state.isRunning()) {
-                if (this.btnFreeSpace.pushIfExists(1000)) {
+                if (!this.btnClaim.pushIfExists(500)) {
                     break;
                 }
             }
         }
-
-        if (this.btnPurchasesGifts.pushIfExists(1000)) {
+        
+        if (this.btnPurchasesGifts.pushIfExists(1500)) {
             while (state.isRunning()) {
-                if (!this.btnClaim.pushIfExists(300)) {
+                if (!this.btnClaim.pushIfExists(500)) {
                     break;
                 }
             }
         }
 
         while (state.isRunning()) {
-            if (btnHome.find(1000) != null) {
-                return;
-            } else {
-                while (state.isRunning()) {
-                    this.btnBack.pushIfExists(1000);
-                }
+            Mat mat = CommandService.takeScreenMat();
+            if(btnBack.pushIfExists(mat, 1500)){
+                continue;
             }
+            if (btnRegion.isFound(mat)) {
+                return;
+            }
+            App.sleep(1000);
         }
     }
 

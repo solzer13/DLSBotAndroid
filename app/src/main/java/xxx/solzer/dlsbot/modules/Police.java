@@ -16,7 +16,7 @@ public class Police extends Module {
     private static final String KEY = "police";
     
     private static final String DRONE_FILE = "btn_drone.png";
-    private static final double DRONE_THRESHOLD = 0.95;
+    private static final double DRONE_THRESHOLD = 0.80;
     private static final String DRONE_NAME = "Полицейский участок";
     
     private static final String DEPLOY_FILE = "btn_deploy.png";
@@ -24,7 +24,7 @@ public class Police extends Module {
     private static final String DEPLOY_NAME = "Развернуть";
 
     private static final String SEARCH_FILE = "btn_search.png";
-    private static final double SEARCH_THRESHOLD = 0.98;
+    private static final double SEARCH_THRESHOLD = 0.80;
     private static final String SEARCH_NAME = "Полицейский участок";
 
     private static final String SEARCH_YELLOW_FILE = "btn_search_yellow.png";
@@ -90,21 +90,22 @@ public class Police extends Module {
             while(state.isRunning()) {
                 Mat mat = CommandService.takeScreenMat();
 
-                Point btn_ok_yellow_point = btnOkYellow.find(mat);
-                if(btn_ok_yellow_point != null){
-                    btnOkYellow.push(btn_ok_yellow_point);
+                if(btnSearchYellow.pushIfExists(mat, 1500)){
+                    continue;
+                }
+                
+                if(btnOkYellow.pushIfExists(mat, 1500)){
                     continue;
                 }
 
-                Point btn_back_point = btnBack.find(mat);
-                if(btn_back_point != null){
-                    btnOkYellow.push(btn_back_point);
+                if(btnBack.pushIfExists(mat, 1500)){
                     continue;
                 }
 
                 if(btnRegion.isFound(mat)){
                     break;
                 }
+                App.sleep(1000);
             }
         }
     }
