@@ -23,6 +23,6 @@ public class UserLog {
     }
 
     public String getLogs(){
-        return this.buff.toString();
+        return this.buff.toString(); 
     }
 }
