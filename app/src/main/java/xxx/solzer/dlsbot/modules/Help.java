@@ -16,7 +16,7 @@ public class Help extends Module {
     private static final String TAG = "Help";
     private static final String KEY = "help";
 
-    private static final String HELP_FILE = "btn_help.png";
+    private static final String HELP_FILE = "help.png";
     private static final double HELP_THRESHOLD = 0.9;
     private static final String HELP_NAME = "Помощь";
 

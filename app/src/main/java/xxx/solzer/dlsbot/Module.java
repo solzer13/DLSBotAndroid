@@ -9,27 +9,27 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public abstract class Module {
 
-    private static final String HOME_FILE = "btn_home.png";
+    private static final String HOME_FILE = "home.png";
     private static final double HOME_THRESHOLD = 0.98;
     private static final String HOME_NAME = "Убежище";
 
-    private static final String REGION_FILE = "btn_region.png";
+    private static final String REGION_FILE = "region.png";
     private static final double REGION_THRESHOLD = 0.98;
     private static final String REGION_NAME = "Регион";
 
-    private static final String BACK_FILE = "btn_back.png";
+    private static final String BACK_FILE = "back.png";
     private static final double BACK_THRESHOLD = 0.98;
     private static final String BACK_NAME = "Назад";
 
-    private static final String OK_YELLOW_FILE = "btn_ok_yellow.png";
-    private static final double OK_YELLOW_THRESHOLD = 0.98;
-    private static final String OK_YELLOW_NAME = "Ok";
+    private static final String OK_FILE = "ok.png";
+    private static final double OK_THRESHOLD = 0.98;
+    private static final String OK_NAME = "Ok";
 
-    private static final String FREE_SPACE_FILE = "btn_free_space.png";
+    private static final String FREE_SPACE_FILE = "push_free_space.png";
     private static final double FREE_SPACE_THRESHOLD = 0.77;
     private static final String FREE_SPACE_NAME = "Пустое место";
 
-    private static final String CLAIM_FILE = "btn_claim.png";
+    private static final String CLAIM_FILE = "claim.png";
     private static final double CLAIM_THRESHOLD = 0.95;
     private static final String CLAIM_NAME = "Получить";
 
@@ -61,10 +61,10 @@ public abstract class Module {
                         getPushMsgLog(BACK_NAME));
         this.btnOkYellow =
                 new Sprite(
-                        getAssetRootPath(OK_YELLOW_FILE),
+                        getAssetRootPath(OK_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        OK_YELLOW_THRESHOLD,
-                        getPushMsgLog(OK_YELLOW_NAME));
+                        OK_THRESHOLD,
+                        getPushMsgLog(OK_NAME));
         this.btnFreeSpace =
                 new Sprite(
                         getAssetRootPath(FREE_SPACE_FILE),

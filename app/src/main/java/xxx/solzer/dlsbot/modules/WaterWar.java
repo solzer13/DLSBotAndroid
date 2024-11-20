@@ -16,37 +16,37 @@ public class WaterWar extends Module {
     public static final String TAG = "WaterWar";
     public static final String KEY = "water";
     
-    private static final String BANNER_FILE = "baner_ww.png";
+    private static final String BANNER_FILE = "baner_water.png";
     private static final double BANNER_THRESHOLD = 0.98;
     private static final String BANNER_NAME = "Банер";
     
-    private static final String WATER_LIGHT_FILE = "btn_ww_light.png";
+    private static final String WATER_LIGHT_FILE = "water_light.png";
     private static final double WATER_LIGHT_THRESHOLD = 0.98;
     private static final String WATER_LIGHT_NAME = "Война за воду";
     
-    private static final String WATER_DARK_FILE = "btn_ww_dark.png";
+    private static final String WATER_DARK_FILE = "water_dark.png";
     private static final double WATER_DARK_THRESHOLD = 0.98;
     private static final String WATER_DARK_NAME = "Война за воду";
     
-    private static final String PICK_FILE = "btn_ww_pick.png";
+    private static final String PICK_FILE = "pick.png";
     private static final double PICK_THRESHOLD = 0.98;
     private static final String PICK_NAME = "Подобрать";
     
-    private static final String READY_FILE = "btn_ww_ready.png";
+    private static final String READY_FILE = "ready.png";
     private static final double READY_THRESHOLD = 0.98;
     private static final String READY_NAME = "Готово";
     
-    private static final String VS_FILE = "bg_ww_vs.png";
+    private static final String VS_FILE = "vs.png";
     private static final double VS_THRESHOLD = 0.9;
     
-    private static final String END_FILE = "bg_ww_end.png";
+    private static final String END_FILE = "end.png";
     private static final double END_THRESHOLD = 0.98;
     
-    private static final String SKIP_FILE = "btn_ww_skip.png";
+    private static final String SKIP_FILE = "skip.png";
     private static final double SKIP_THRESHOLD = 0.98;
     private static final String SKIP_NAME = "Пропустить";
     
-    private static final String EXIT_FILE = "btn_ww_exit.png";
+    private static final String EXIT_FILE = "exit.png";
     private static final double EXIT_THRESHOLD = 0.98;
     private static final String EXIT_NAME = "Выход";
     
