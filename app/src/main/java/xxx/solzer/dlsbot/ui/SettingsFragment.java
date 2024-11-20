@@ -22,19 +22,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onResume() {
         super.onResume();
-
+        
         for (Module module : App.modules.getModules()) {
             SwitchPreferenceCompat pref = findPreference(module.getKey());
             if (pref != null) {
-                boolean exists =
-                        App.isAssetDirExists(App.getAssetDirName() + "/" + module.getKey());
+                boolean exists = App.isAssetDirExists(App.getAssetDirName() + "/" + module.getKey());
                 if (!exists) {
                     pref.setChecked(false);
                 }
                 pref.setEnabled(exists);
             }
         }
-        updatePrefs();
+        if(App.isScreenSupported()){
+            updatePrefs();
+        }
     }
 
     @Override
@@ -51,9 +52,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SwitchPreferenceCompat bounty = findPreference(BountyGround.KEY);
         SwitchPreferenceCompat water = findPreference(WaterWar.KEY);
 
+        boolean bounty_exists = App.isAssetDirExists(App.getAssetDirName() + "/bounty");
+        boolean water_exists = App.isAssetDirExists(App.getAssetDirName() + "/water");
+        
         if(bounty != null && water != null){
-            bounty.setEnabled(!water.isChecked());
-            water.setEnabled(!bounty.isChecked());
+            bounty.setEnabled(bounty_exists && !water.isChecked());
+            water.setEnabled(water_exists && !bounty.isChecked());
         }
     }
 
