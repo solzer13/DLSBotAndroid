@@ -18,12 +18,7 @@ public class AirDrop extends Module {
     private static final double AIRDROP_THRESHOLD = 0.9;
     private static final String AIRDROP_NAME = "Эйрдроп";
 
-    private static final String CLOSE_FILE = "close.png";
-    private static final double CLOSE_THRESHOLD = 0.9;
-    private static final String CLOSE_NAME = "Закрыть";
-
     private final Sprite btnAirDrop;
-    private final Sprite btnClose;
 
     public AirDrop(){
         this.btnAirDrop =
@@ -32,12 +27,6 @@ public class AirDrop extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         AIRDROP_THRESHOLD,
                         getPushMsgLog(AIRDROP_NAME));
-        this.btnClose =
-                new Sprite(
-                        getAssetPath(CLOSE_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        CLOSE_THRESHOLD,
-                        getPushMsgLog(CLOSE_NAME));
 
     }
 
@@ -54,7 +43,7 @@ public class AirDrop extends Module {
 
                 btnClaim.pushIfExists(mat, 1000);
                 
-                if(btnClose.pushIfExists(mat, 1000)){
+                if(btnCloseLight.pushIfExists(mat, 1000)){
                     break;
                 }
             }

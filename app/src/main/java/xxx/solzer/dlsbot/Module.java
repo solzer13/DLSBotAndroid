@@ -22,7 +22,7 @@ public abstract class Module {
     private static final String BACK_NAME = "Назад";
 
     private static final String OK_FILE = "ok.png";
-    private static final double OK_THRESHOLD = 0.98;
+    private static final double OK_THRESHOLD = 0.7;
     private static final String OK_NAME = "Ok";
 
     private static final String FREE_SPACE_FILE = "push_free_space.png";
@@ -33,12 +33,22 @@ public abstract class Module {
     private static final double CLAIM_THRESHOLD = 0.95;
     private static final String CLAIM_NAME = "Получить";
 
+    private static final String CLOSE_LIGHT_FILE = "close_light.png";
+    private static final double CLOSE_LIGHT_THRESHOLD = 0.9;
+    private static final String CLOSE_LIGHT_NAME = "Закрыть";
+
+    private static final String CLOSE_DARK_FILE = "close_dark.png";
+    private static final double CLOSE_DARK_THRESHOLD = 0.9;
+    private static final String CLOSE_DARK_NAME = "Закрыть";
+
     protected final Sprite btnHome;
     protected final Sprite btnRegion;
     protected final Sprite btnBack;
     protected final Sprite btnOkYellow;
     protected final Sprite btnFreeSpace;
     protected final Sprite btnClaim;
+    protected final Sprite btnCloseLight;
+    protected final Sprite btnCloseDark;
 
     public Module() {
         this.btnHome =
@@ -77,6 +87,18 @@ public abstract class Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         CLAIM_THRESHOLD,
                         getPushMsgLog(CLAIM_NAME));
+        this.btnCloseLight =
+                new Sprite(
+                        getAssetRootPath(CLOSE_LIGHT_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CLOSE_LIGHT_THRESHOLD,
+                        getPushMsgLog(CLOSE_LIGHT_NAME));
+        this.btnCloseDark =
+                new Sprite(
+                        getAssetRootPath(CLOSE_DARK_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CLOSE_DARK_THRESHOLD,
+                        getPushMsgLog(CLOSE_DARK_NAME));
     }
 
     public abstract void run(CommandService.StateToken state);

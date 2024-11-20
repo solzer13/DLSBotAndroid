@@ -30,6 +30,7 @@ import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
 import xxx.solzer.dlsbot.modules.Help;
 import xxx.solzer.dlsbot.modules.Police;
+import xxx.solzer.dlsbot.modules.Radar;
 import xxx.solzer.dlsbot.modules.WaterWar;
 
 public class App extends Application {
@@ -65,6 +66,7 @@ public class App extends Application {
             new Help(),
             new CollectingHome(),
             new Police(),
+            new Radar(),
             new AllianceGifts(),
             new BountyGround(),
             new WaterWar(),

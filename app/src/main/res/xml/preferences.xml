@@ -122,10 +122,10 @@
             android:key="police"
             android:enabled="true"
             android:title="Полицейский участок"
-            android:summary=" в полицейском участке"/>
+            android:summary="Запускать поиск в полицейском участке"/>
         
         <SwitchPreferenceCompat
-            android:key="switch"
+            android:key="radar"
             android:enabled="false"
             android:title="Радар"
             android:summary="Выполнять задания с радара"/>
@@ -133,8 +133,8 @@
         <SwitchPreferenceCompat
             android:key="collecting_home"
             android:enabled="true"
-            android:title="Ресурсы в городе"
-            android:summary="Собирать ресурсы в городе"/>
+            android:title="Ресурсы в убежище"
+            android:summary="Собирать ресурсы в убежище"/>
         
         <SwitchPreferenceCompat
             android:key="switch"
