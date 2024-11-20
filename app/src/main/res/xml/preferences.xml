@@ -154,6 +154,12 @@
             android:title="Гараж"
             android:summary="Запускать производство в гараже"/>
         
+        <SwitchPreferenceCompat
+            android:key="airdrop"
+            android:enabled="true"
+            android:title="Эйрдроп"
+            android:summary="Собирать эйрдропы"/>
+        
     </PreferenceCategory>
 
 </PreferenceScreen>

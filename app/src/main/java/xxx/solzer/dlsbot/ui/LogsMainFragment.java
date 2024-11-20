@@ -16,7 +16,7 @@ public class LogsMainFragment extends Fragment {
     private TextView logText;
 
     public LogsMainFragment() {
-        super(R.layout.main_logs_fragment);
+        super(R.layout.fragment_logs);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

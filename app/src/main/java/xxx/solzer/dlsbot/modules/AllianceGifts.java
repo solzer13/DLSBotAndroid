@@ -26,10 +26,6 @@ public class AllianceGifts extends Module {
     private static final double CLAIM_ALL_THRESHOLD = 0.98;
     private static final String CLAIM_ALL_NAME = "Собрать все";
 
-    private static final String CLAIM_FILE = "btn_claim.png";
-    private static final double CLAIM_THRESHOLD = 0.98;
-    private static final String CLAIM_NAME = "Получить";
-
     private static final String ACTIVITY_GIFTS_FILE = "btn_activity_gifts.png";
     private static final double ACTIVITY_GIFTS_THRESHOLD = 0.97;
     private static final String ACTIVITY_GIFTS_NAME = "Награда за активность";
@@ -41,7 +37,6 @@ public class AllianceGifts extends Module {
     private final Sprite btnAlliance;
     private final Sprite btnGifts;
     private final Sprite btnClaimAll;
-    private final Sprite btnClaim;
     private final Sprite btnActivityGifts;
     private final Sprite btnPurchasesGifts;
 
@@ -54,35 +49,24 @@ public class AllianceGifts extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         ALLIANCE_THRESHOLD,
                         getPushMsgLog(ALLIANCE_NAME));
-
         this.btnGifts =
                 new Sprite(
                         getAssetPath(GIFTS_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         GIFTS_THRESHOLD,
                         getPushMsgLog(GIFTS_NAME));
-
         this.btnClaimAll =
                 new Sprite(
                         getAssetPath(CLAIM_ALL_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         CLAIM_ALL_THRESHOLD,
                         getPushMsgLog(CLAIM_ALL_NAME));
-
-        this.btnClaim =
-                new Sprite(
-                        getAssetPath(CLAIM_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        CLAIM_THRESHOLD,
-                        getPushMsgLog(CLAIM_NAME));
-
         this.btnActivityGifts =
                 new Sprite(
                         getAssetPath(ACTIVITY_GIFTS_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         ACTIVITY_GIFTS_THRESHOLD,
                         getPushMsgLog(ACTIVITY_GIFTS_NAME));
-
         this.btnPurchasesGifts =
                 new Sprite(
                         getAssetPath(PURCHASES_GIFTS_FILE),
