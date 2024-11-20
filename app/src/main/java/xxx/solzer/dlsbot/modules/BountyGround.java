@@ -16,26 +16,26 @@ public class BountyGround extends Module {
     public static final String TAG = "BountyGround";
     public static final String KEY = "bounty";
 
-    private static final String CAMPAIGN_FILE = "btn_campaign.png";
+    private static final String CAMPAIGN_FILE = "campaign.png";
     private static final double CAMPAIGN_THRESHOLD = 0.95;
     private static final String CAMPAIGN_NAME = "Компании";
 
-    private static final String BOUNTY_FILE = "btn_bg.png";
+    private static final String BOUNTY_FILE = "bounty.png";
     private static final double BOUNTY_THRESHOLD = 0.98;
     private static final String BOUNTY_NAME = "Охота за призом";
 
-    private static final String MATCH_FILE = "btn_match.png";
+    private static final String MATCH_FILE = "match.png";
     private static final double MATCH_THRESHOLD = 0.98;
     private static final String MATCH_NAME = "Матч";
 
-    private static final String CHANCEL_FILE = "btn_chancel.png";
+    private static final String CHANCEL_FILE = "chancel.png";
     private static final double CHANCEL_THRESHOLD = 0.98;
     private static final String CHANCEL_NAME = "Отмена";
 
-    private static final String PROCESS_FILE = "bg_process.png";
+    private static final String PROCESS_FILE = "process.png";
     private static final double PROCESS_THRESHOLD = 0.95;
 
-    private static final String SELECTION_FILE = "bg_selection.png";
+    private static final String SELECTION_FILE = "selection.png";
     private static final double SELECTION_THRESHOLD = 0.95;
 
     private final Sprite btnCampaign;

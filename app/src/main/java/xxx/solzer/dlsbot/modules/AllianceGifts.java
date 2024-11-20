@@ -14,23 +14,23 @@ public class AllianceGifts extends Module {
     private static final String TAG = "AllianceGifts";
     private static final String KEY = "alliance_gifts";
 
-    private static final String ALLIANCE_FILE = "btn_alliance.png";
+    private static final String ALLIANCE_FILE = "alliance.png";
     private static final double ALLIANCE_THRESHOLD = 0.98;
     private static final String ALLIANCE_NAME = "Альянс";
 
-    private static final String GIFTS_FILE = "btn_gifts.png";
+    private static final String GIFTS_FILE = "gifts.png";
     private static final double GIFTS_THRESHOLD = 0.98;
     private static final String GIFTS_NAME = "Подарки";
 
-    private static final String CLAIM_ALL_FILE = "btn_claim_all.png";
+    private static final String CLAIM_ALL_FILE = "claim_all.png";
     private static final double CLAIM_ALL_THRESHOLD = 0.98;
     private static final String CLAIM_ALL_NAME = "Собрать все";
 
-    private static final String ACTIVITY_GIFTS_FILE = "btn_activity_gifts.png";
+    private static final String ACTIVITY_GIFTS_FILE = "activity_gifts.png";
     private static final double ACTIVITY_GIFTS_THRESHOLD = 0.97;
     private static final String ACTIVITY_GIFTS_NAME = "Награда за активность";
 
-    private static final String PURCHASES_GIFTS_FILE = "btn_purchases_gifts.png";
+    private static final String PURCHASES_GIFTS_FILE = "purchases_gifts.png";
     private static final double PURCHASES_GIFTS_THRESHOLD = 0.97;
     private static final String PURCHASES_GIFTS_NAME = "Награда за покупки";
     

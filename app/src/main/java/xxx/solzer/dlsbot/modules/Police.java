@@ -13,19 +13,19 @@ public class Police extends Module {
     private static final String TAG = "Police";
     private static final String KEY = "police";
     
-    private static final String DRONE_FILE = "btn_drone.png";
+    private static final String DRONE_FILE = "drone.png";
     private static final double DRONE_THRESHOLD = 0.80;
     private static final String DRONE_NAME = "Полицейский участок";
     
-    private static final String DEPLOY_FILE = "btn_deploy.png";
+    private static final String DEPLOY_FILE = "deploy.png";
     private static final double DEPLOY_THRESHOLD = 0.98;
     private static final String DEPLOY_NAME = "Развернуть";
 
-    private static final String SEARCH_FILE = "btn_search.png";
+    private static final String SEARCH_FILE = "search.png";
     private static final double SEARCH_THRESHOLD = 0.80;
     private static final String SEARCH_NAME = "Полицейский участок";
 
-    private static final String SEARCH_YELLOW_FILE = "btn_search_yellow.png";
+    private static final String SEARCH_YELLOW_FILE = "search_yellow.png";
     private static final double SEARCH_YELLOW_THRESHOLD = 0.95;
     private static final String SEARCH_YELLOW_NAME = "Поиск";
 
