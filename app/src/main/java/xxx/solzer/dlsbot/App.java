@@ -24,6 +24,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import xxx.solzer.dlsbot.modules.AirDrop;
 import xxx.solzer.dlsbot.modules.AllianceGifts;
 import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
@@ -66,7 +67,8 @@ public class App extends Application {
             new Police(),
             new AllianceGifts(),
             new BountyGround(),
-            new WaterWar()
+            new WaterWar(),
+            new AirDrop()
         );
         
         bus.register(userLog);

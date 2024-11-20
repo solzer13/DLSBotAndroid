@@ -1,29 +1,14 @@
 package xxx.solzer.dlsbot.modules;
 
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.util.Log;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.IOException;
-import java.io.InputStream;
 
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
 import xxx.solzer.dlsbot.Sprite;
-import xxx.solzer.dlsbot.events.OnScreenTaked;
-import xxx.solzer.dlsbot.events.OnTakeScreen;
-import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class BountyGround extends Module {
@@ -32,7 +17,7 @@ public class BountyGround extends Module {
     public static final String KEY = "bounty";
 
     private static final String CAMPAIGN_FILE = "btn_campaign.png";
-    private static final double CAMPAIGN_THRESHOLD = 0.98;
+    private static final double CAMPAIGN_THRESHOLD = 0.95;
     private static final String CAMPAIGN_NAME = "Компании";
 
     private static final String BOUNTY_FILE = "btn_bg.png";
@@ -48,10 +33,10 @@ public class BountyGround extends Module {
     private static final String CHANCEL_NAME = "Отмена";
 
     private static final String PROCESS_FILE = "bg_process.png";
-    private static final double PROCESS_THRESHOLD = 0.98;
+    private static final double PROCESS_THRESHOLD = 0.95;
 
     private static final String SELECTION_FILE = "bg_selection.png";
-    private static final double SELECTION_THRESHOLD = 0.98;
+    private static final double SELECTION_THRESHOLD = 0.95;
 
     private final Sprite btnCampaign;
     private final Sprite btnBounty;
@@ -135,6 +120,10 @@ public class BountyGround extends Module {
                     continue;
                 }
                 if(wndProcess.isFound(mat)){
+                    break;
+                }
+                if(!wndSelection.isFound(mat) && !wndProcess.isFound(mat) && 
+                    btnRegion.isFound(mat) && btnCampaign.isFound(mat)){
                     break;
                 }
             }

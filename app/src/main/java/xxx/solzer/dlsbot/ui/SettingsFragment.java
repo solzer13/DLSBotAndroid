@@ -51,8 +51,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SwitchPreferenceCompat bounty = findPreference(BountyGround.KEY);
         SwitchPreferenceCompat water = findPreference(WaterWar.KEY);
 
-        bounty.setEnabled(!water.isChecked());
-        water.setEnabled(!bounty.isChecked());
+        if(bounty != null && water != null){
+            bounty.setEnabled(!water.isChecked());
+            water.setEnabled(!bounty.isChecked());
+        }
     }
 
     @Override

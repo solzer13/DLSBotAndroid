@@ -1,14 +1,10 @@
 package xxx.solzer.dlsbot;
 
-import android.graphics.Bitmap;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
-import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public abstract class Module {
@@ -33,11 +29,16 @@ public abstract class Module {
     private static final double FREE_SPACE_THRESHOLD = 0.77;
     private static final String FREE_SPACE_NAME = "Пустое место";
 
+    private static final String CLAIM_FILE = "btn_claim.png";
+    private static final double CLAIM_THRESHOLD = 0.95;
+    private static final String CLAIM_NAME = "Получить";
+
     protected final Sprite btnHome;
     protected final Sprite btnRegion;
     protected final Sprite btnBack;
     protected final Sprite btnOkYellow;
     protected final Sprite btnFreeSpace;
+    protected final Sprite btnClaim;
 
     public Module() {
         this.btnHome =
@@ -70,6 +71,12 @@ public abstract class Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         FREE_SPACE_THRESHOLD,
                         getPushMsgLog(FREE_SPACE_NAME));
+        this.btnClaim =
+                new Sprite(
+                        getAssetRootPath(CLAIM_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CLAIM_THRESHOLD,
+                        getPushMsgLog(CLAIM_NAME));
     }
 
     public abstract void run(CommandService.StateToken state);

@@ -1,13 +1,11 @@
 package xxx.solzer.dlsbot.modules;
 
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 import xxx.solzer.dlsbot.App;
 import xxx.solzer.dlsbot.CommandService;
 import xxx.solzer.dlsbot.Module;
 import xxx.solzer.dlsbot.Sprite;
-import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Police extends Module {
@@ -28,7 +26,7 @@ public class Police extends Module {
     private static final String SEARCH_NAME = "Полицейский участок";
 
     private static final String SEARCH_YELLOW_FILE = "btn_search_yellow.png";
-    private static final double SEARCH_YELLOW_THRESHOLD = 0.98;
+    private static final double SEARCH_YELLOW_THRESHOLD = 0.95;
     private static final String SEARCH_YELLOW_NAME = "Поиск";
 
     private final Sprite btnDrone;
