@@ -45,6 +45,42 @@ public class Sprite {
     public void setScale(double scale){
         this.scale = scale;
     }
+
+    public boolean pushTimeout(CommandService.StateToken state){
+        return pushTimeout(state, 200, 10000);
+    }
+
+    public boolean pushTimeout(CommandService.StateToken state, Mat mat){
+        return pushTimeout(state, mat, 200, 10000);
+    }
+
+    public boolean pushTimeout(CommandService.StateToken state, int delay){
+        return pushTimeout(state, delay, 10000);
+    }
+
+    public boolean pushTimeout(CommandService.StateToken state, int delay, int timeout){
+        return pushTimeout(state, CommandService.takeScreenMat(), delay, timeout);
+    }
+
+    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay, int timeout){
+        long started = System.currentTimeMillis();
+        while(state.isRunning()){
+            if((started + delay) < System.currentTimeMillis()){
+                Point point = find(mat);
+                if(point != null){
+                    App.bus.post(new OnTap(point));
+                    if(this.logMessage != null){
+                        App.bus.post(new OnUserLog(this.logMessage + " (millis: " + (System.currentTimeMillis() - started) + ")"));
+                    }
+                    return true;
+                }
+            }
+            if((started + delay + timeout) < System.currentTimeMillis()){
+                break;
+            }
+        }
+        return false;
+    }
     
     public boolean pushIfExists(int sleep){
         Point point = find();

@@ -92,34 +92,28 @@ public class AllianceGifts extends Module {
             logUserMsg("Start");
         }
 
-        this.btnAlliance.pushIfExists(1500);
-        this.btnGifts.pushIfExists(1500);
-        //this.btnActivityGifts.pushIfExists(1500);
+        if(this.btnAlliance.pushIfExists(1500)){
+            if(this.btnGifts.pushIfExists(1500)){
 
-//        if (this.btnClaimAll.pushIfExists(1500)) {
-//            while (state.isRunning()) {
-//                if (this.btnFreeSpace.pushIfExists(1500)) {
-//                    break;
-//                }
-//            }
-//        }
+                if(this.btnActivityGifts.pushIfExists(1500)){
+                    if(btnClaimAll.pushIfExists(2000)){
+                        btnCongrats.pushIfExists(1500);
+                    }
+                    while (state.isRunning()) {
+                        if (!this.btnClaim.pushIfExists(500)) {
+                            break;
+                        }
+                    }
+                }
 
-        if (this.btnActivityGifts.pushIfExists(1500)) {
-            if(btnClaimAll.pushIfExists(2000)){
-                btnCongrats.pushIfExists(1500);
-            }
-            while (state.isRunning()) {
-                if (!this.btnClaim.pushIfExists(500)) {
-                    break;
+                if(this.btnPurchasesGifts.pushIfExists(1500)) {
+                    while (state.isRunning()) {
+                        if (!this.btnClaim.pushIfExists(500)) {
+                            break;
+                        }
+                    }
                 }
-            }
-        }
-        
-        if (this.btnPurchasesGifts.pushIfExists(1500)) {
-            while (state.isRunning()) {
-                if (!this.btnClaim.pushIfExists(500)) {
-                    break;
-                }
+
             }
         }
 

@@ -47,7 +47,9 @@ public class CommandService extends AccessibilityService {
     private SharedPreferences preference;
     
     public volatile static Bitmap screen = null;
-    
+
+    private int mTakeScreenShotDelayMs = 100;
+
     private StateToken state = new StateToken();
     
     private WindowManager mWindowManager;
@@ -149,7 +151,8 @@ public class CommandService extends AccessibilityService {
                     }
             );
         }
-        else { 
+        else {
+            int delay = 100;
             instance.takeScreenshot(
                     Display.DEFAULT_DISPLAY,
                     Executors.newSingleThreadExecutor(),
@@ -160,8 +163,27 @@ public class CommandService extends AccessibilityService {
                         }
     
                         @Override
-                        public void onFailure(int i) {
-                            Log.d(TAG, "Failure code is " + i);
+                        public void onFailure(int errorCode) {
+                            try {
+                                if (errorCode == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT) {
+                                    // try again later, incrementing delay
+                                    instance.mTakeScreenShotDelayMs += 50;
+                                    App.sleep(instance.mTakeScreenShotDelayMs);
+                                        try {
+                                            instance.takeScreenshot(Display.DEFAULT_DISPLAY,
+                                                    Executors.newSingleThreadExecutor(),
+                                                    this
+                                            );
+                                        } catch (Exception ignored) {
+                                            // instance might be gone
+                                        }
+                                    Log.w(TAG, "takeScreenShots: onFailure with ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT - upped delay to " + instance.mTakeScreenShotDelayMs);
+                                    return;
+                                }
+                                Log.e(TAG, "takeScreenShots: onFailure with error code " + errorCode);
+                            } catch (Exception e) {
+                                Log.e(TAG, "takeScreenShots: onFailure exception " + e);
+                            }
                         }
                     }
             );

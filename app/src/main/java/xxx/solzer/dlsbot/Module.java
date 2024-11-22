@@ -11,15 +11,15 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 public abstract class Module {
 
     private static final String HOME_FILE = "home.png";
-    private static final double HOME_THRESHOLD = 0.9;
+    private static final double HOME_THRESHOLD = 0.8;
     private static final String HOME_NAME = "Убежище";
 
     private static final String REGION_FILE = "region.png";
-    private static final double REGION_THRESHOLD = 0.9;
+    private static final double REGION_THRESHOLD = 0.8;
     private static final String REGION_NAME = "Регион";
 
     private static final String ALLIANCE_FILE = "alliance.png";
-    private static final double ALLIANCE_THRESHOLD = 0.9;
+    private static final double ALLIANCE_THRESHOLD = 0.8;
     private static final String ALLIANCE_NAME = "Альянс";
 
     private static final String BACK_FILE = "back.png";

@@ -72,18 +72,20 @@ public class DonateTechnologies extends Module {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        if(btnAlliance.pushIfExists(1500)){
-            if(btnTechnologies.pushIfExists(1500)){
-                if(btnSelected.pushIfExists(1500)){
+        if(btnAlliance.pushTimeout(state)){
+            if(btnTechnologies.pushTimeout(state)){
+                if(btnSelected.pushTimeout(state)){
                     while(state.isRunning()) {
                     	Mat mat = CommandService.takeScreenMat();
-                        if(btnDonateEnable.pushIfExists(mat, 500)){
+                        if(btnDonateEnable.pushTimeout(state)){
                             continue;
                         }
-                        if(btnDonateDisable.isFound(mat, 1000)){
+                        if(btnDonateDisable.isFound(mat)){
                             break;
                         }
-                        App.sleep(1000);
+                        if(!btnDonateEnable.isFound(mat) && !btnDonateDisable.isFound(mat)){
+                            break;
+                        }
                     }
                 }
             }
@@ -91,16 +93,16 @@ public class DonateTechnologies extends Module {
             while (state.isRunning()) {
                 Mat mat = CommandService.takeScreenMat();
 
-                if(btnBack.pushIfExists(mat, 1000)) {
+                if(btnBack.pushTimeout(state, mat)) {
                     continue;
                 }
-                if(btnCloseDark.pushIfExists(mat, 1000)){
+                if(btnCloseDark.pushTimeout(state, mat)){
                     continue;
                 }
-                if(btnHome.pushIfExists(mat, 1000)){
+                if(btnHome.pushTimeout(state, mat)){
                     continue;
                 }
-                if(btnRegion.isFound(mat, 1000)){
+                if(btnRegion.isFound(mat)){
                     break;
                 }
             }

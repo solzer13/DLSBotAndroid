@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         App.bus.register(this);
         
-        //checkPremission();
+        checkPremission();
         
         setActionIcon(CommandService.isFloatingVisible());
 
