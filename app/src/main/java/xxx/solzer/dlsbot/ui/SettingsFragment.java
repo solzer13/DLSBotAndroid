@@ -23,56 +23,53 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onResume() {
         super.onResume();
         
+        boolean supported = App.isScreenSupported();
+
         for (Module module : App.modules.getModules()) {
             SwitchPreferenceCompat pref = findPreference(module.getKey());
             if (pref != null) {
-                boolean exists = App.isAssetDirExists(App.getAssetDirName() + "/" + module.getKey());
+                boolean exists = App.isAssetDirExists(module.getKey());
                 if (!exists) {
                     pref.setChecked(false);
                 }
-                pref.setEnabled(exists);
+                pref.setEnabled(supported && exists);
             }
         }
-        if(App.isScreenSupported()){
-            updatePrefs();
+                
+        SwitchPreferenceCompat bounty = findPreference(BountyGround.KEY);
+        SwitchPreferenceCompat water = findPreference(WaterWar.KEY);
+
+        if (bounty != null && water != null) {
+            bounty.setEnabled(!water.isChecked());
+            water.setEnabled(!bounty.isChecked());
         }
     }
 
     @Override
     public void onPause() {
-        
         super.onPause();
     }
 
     private void onSharedPreferenceChangeListener(SharedPreferences pref, String key) {
-        updatePrefs();
+        onResume();
     }
 
     private void updatePrefs() {
-        SwitchPreferenceCompat bounty = findPreference(BountyGround.KEY);
-        SwitchPreferenceCompat water = findPreference(WaterWar.KEY);
 
-        boolean bounty_exists = App.isAssetDirExists(App.getAssetDirName() + "/bounty");
-        boolean water_exists = App.isAssetDirExists(App.getAssetDirName() + "/water");
-        
-        if(bounty != null && water != null){
-            bounty.setEnabled(bounty_exists && !water.isChecked());
-            water.setEnabled(water_exists && !bounty.isChecked());
-        }
     }
 
     @Override
     public void onAttach(Context arg0) {
         super.onAttach(arg0);
-        
-                PreferenceManager.getDefaultSharedPreferences(getContext())
-                .registerOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
 
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .registerOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
     }
 
     @Override
     public void onDetach() {
-        PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .unregisterOnSharedPreferenceChangeListener(this::onSharedPreferenceChangeListener);
         super.onDetach();
     }
 }

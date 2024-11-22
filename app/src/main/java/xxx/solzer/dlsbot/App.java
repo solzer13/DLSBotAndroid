@@ -3,20 +3,17 @@ package xxx.solzer.dlsbot;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import org.greenrobot.eventbus.EventBus;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -28,6 +25,7 @@ import xxx.solzer.dlsbot.modules.AirDrop;
 import xxx.solzer.dlsbot.modules.AllianceGifts;
 import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
+import xxx.solzer.dlsbot.modules.Garage;
 import xxx.solzer.dlsbot.modules.Help;
 import xxx.solzer.dlsbot.modules.Police;
 import xxx.solzer.dlsbot.modules.Radar;
@@ -47,6 +45,11 @@ public class App extends Application {
     
     public static final Scalar RED = new Scalar(255, 0, 0, 255);
     
+    public static final Screen[] SCREENS = new Screen[]{ 
+        new Screen(2179, 1080, 1, 1),
+        new Screen(1340, 800, 0.69, 0.56)
+    };
+    
     public App(){
         instance = this;
     }
@@ -65,18 +68,19 @@ public class App extends Application {
         modules = new ModuleRepository(
             new Help(),
             new CollectingHome(),
+            new AirDrop(),
+            new Garage(),
             new Police(),
             new Radar(),
             new AllianceGifts(),
             new BountyGround(),
-            new WaterWar(),
-            new AirDrop()
+            new WaterWar()
         );
         
         bus.register(userLog);
         bus.register(modules);
     }
-
+    
     public static void sleep(int millis){
         try{Thread.sleep(millis);}catch(Exception e){}
     }
@@ -180,7 +184,8 @@ public class App extends Application {
     }
     
     public static boolean isScreenSupported(){
-        return isAssetDirExists(getAssetDirName());
+        return getCurrentScreen() != null;
+        //return isAssetDirExists(getAssetDirName());
     }
     
     public static boolean isAssetDirExists(String path){
@@ -198,12 +203,30 @@ public class App extends Application {
     }
 
     public static String getAssetDirName(){
-        if(getScreenWidth() > getScreenHeight()){
-            return String.valueOf(getScreenWidth()) + "x" + String.valueOf(getScreenHeight());
+        return "auto";
+//        if(getScreenWidth() > getScreenHeight()){
+//            return String.valueOf(getScreenWidth()) + "x" + String.valueOf(getScreenHeight());
+//        }
+//        else {
+//            return String.valueOf(getScreenHeight()) + "x" + String.valueOf(getScreenWidth());
+//        }
+    }
+    
+    public static Screen getCurrentScreen(){
+        for(Screen screen : SCREENS) {
+        	if(screen.width == getScreenMax()){
+                return screen;
+            }
         }
-        else {
-            return String.valueOf(getScreenHeight()) + "x" + String.valueOf(getScreenWidth());
-        }
+        return null;
+    }
+    
+    public static int getScreenMax(){
+        return getScreenWidth() > getScreenHeight() ? getScreenWidth() : getScreenHeight();
+    }
+    
+    public static int getScreenMin(){
+        return getScreenWidth() < getScreenHeight() ? getScreenWidth() : getScreenHeight();
     }
 
     public static int getScreenWidth() {

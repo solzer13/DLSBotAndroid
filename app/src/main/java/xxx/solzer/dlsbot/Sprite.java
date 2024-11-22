@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
@@ -14,17 +15,16 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 public class Sprite {
     
     private final Path path;
-    
     private final double trashold;
-    
     private final int type;
-    
     private String logMessage;
+    private double scale;
     
     public Sprite(Path file, int type, double trashold){
         this.path = file;
         this.type = type;
         this.trashold = trashold;
+        this.scale = App.getCurrentScreen().scaleInterface;
     }
     
     public Sprite(Path file, int type, double trashold, String msg){
@@ -34,6 +34,10 @@ public class Sprite {
     
     public void setLogMessage(String msg){
         this.logMessage = msg;
+    }
+    
+    public void setScale(double scale){
+        this.scale = scale;
     }
     
     public boolean pushIfExists(int sleep){
@@ -105,16 +109,22 @@ public class Sprite {
     public Point find(Mat mat){
         return findImage(mat, this.path, this.type, this.trashold);
     }
+    
+    public static Mat scale(Mat source, double scale){
+        Mat result = new Mat();
+        Imgproc.resize(source, result, new Size(source.cols() * scale, source.rows() * scale));
+        return result;
+    }
         
-    public static Point findImage(Mat big, Path small, int type, double trashold){ 
+    public Point findImage(Mat big, Path small, int type, double trashold){ 
         return findImage(big, App.getAsset(small), type, trashold);
     }
 
-    public static Point findImage(Mat big, Mat small, int type, double trashold){
+    public Point findImage(Mat big, Mat small, int type, double trashold){
         try {
             Mat result = new Mat();
 
-            Imgproc.matchTemplate(big, small, result, type);
+            Imgproc.matchTemplate(big, scale(small, this.scale), result, type);
 
             var mml = Core.minMaxLoc(result);
             var loc = mml.maxLoc;
@@ -131,4 +141,5 @@ public class Sprite {
         
         return null;
     }
+    
 }

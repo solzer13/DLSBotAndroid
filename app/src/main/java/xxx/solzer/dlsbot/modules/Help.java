@@ -17,7 +17,7 @@ public class Help extends Module {
     private static final String KEY = "help";
 
     private static final String HELP_FILE = "help.png";
-    private static final double HELP_THRESHOLD = 0.9;
+    private static final double HELP_THRESHOLD = 0.8;
     private static final String HELP_NAME = "Помощь";
 
     private final Sprite btnHelp;

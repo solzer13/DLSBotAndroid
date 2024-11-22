@@ -20,6 +20,10 @@ public class CollectingHome extends Module {
     private static final double TOMATOES_THRESHOLD = 0.9;
     private static final String TOMATOES_NAME = "Собрать помидоры";
 
+    private static final String TOMATOES_FULL_FILE = "tomatoes_full.png";
+    private static final double TOMATOES_FULL_THRESHOLD = 0.9;
+    private static final String TOMATOES_FULL_NAME = "Собрать помидоры";
+
     private static final String WOOD_FILE = "wood.png";
     private static final double WOOD_THRESHOLD = 0.9;
     private static final String WOOD_NAME = "Собрать древесину";
@@ -33,6 +37,7 @@ public class CollectingHome extends Module {
     private static final String OIL_NAME = "Собрать нефть";
 
     private final Sprite btnTomatoes;
+    private final Sprite btnTomatoesFull;
     private final Sprite btnWood;
     private final Sprite btnSteel;
     private final Sprite btnOil;
@@ -45,7 +50,16 @@ public class CollectingHome extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         TOMATOES_THRESHOLD,
                         getPushMsgLog(TOMATOES_NAME));
-
+        this.btnTomatoes.setScale(App.getCurrentScreen().scaleMap);
+        
+        this.btnTomatoesFull =
+                new Sprite(
+                        getAssetPath(TOMATOES_FULL_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        TOMATOES_FULL_THRESHOLD,
+                        getPushMsgLog(TOMATOES_FULL_NAME));
+        this.btnTomatoesFull.setScale(App.getCurrentScreen().scaleMap);
+        
         this.btnWood =
                 new Sprite(
                         getAssetPath(WOOD_FILE),
@@ -78,7 +92,7 @@ public class CollectingHome extends Module {
 
         Mat mat = CommandService.takeScreenMat();
 
-        if(btnTomatoes.pushIfExists(mat, 1000)){
+        if(btnTomatoes.pushIfExists(mat, 1000) || btnTomatoesFull.pushIfExists(mat, 1000)){
             return;
         }
 

@@ -3,6 +3,7 @@ package xxx.solzer.dlsbot;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 import xxx.solzer.dlsbot.events.OnUserLog;
@@ -10,15 +11,15 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 public abstract class Module {
 
     private static final String HOME_FILE = "home.png";
-    private static final double HOME_THRESHOLD = 0.98;
+    private static final double HOME_THRESHOLD = 0.9;
     private static final String HOME_NAME = "Убежище";
 
     private static final String REGION_FILE = "region.png";
-    private static final double REGION_THRESHOLD = 0.98;
+    private static final double REGION_THRESHOLD = 0.9;
     private static final String REGION_NAME = "Регион";
 
     private static final String BACK_FILE = "back.png";
-    private static final double BACK_THRESHOLD = 0.98;
+    private static final double BACK_THRESHOLD = 0.6;
     private static final String BACK_NAME = "Назад";
 
     private static final String OK_FILE = "ok.png";
@@ -34,17 +35,17 @@ public abstract class Module {
     private static final String CLAIM_NAME = "Получить";
 
     private static final String CLOSE_LIGHT_FILE = "close_light.png";
-    private static final double CLOSE_LIGHT_THRESHOLD = 0.9;
+    private static final double CLOSE_LIGHT_THRESHOLD = 0.8;
     private static final String CLOSE_LIGHT_NAME = "Закрыть";
 
     private static final String CLOSE_DARK_FILE = "close_dark.png";
-    private static final double CLOSE_DARK_THRESHOLD = 0.9;
+    private static final double CLOSE_DARK_THRESHOLD = 0.8;
     private static final String CLOSE_DARK_NAME = "Закрыть";
 
     protected final Sprite btnHome;
     protected final Sprite btnRegion;
     protected final Sprite btnBack;
-    protected final Sprite btnOkYellow;
+    protected final Sprite btnOk;
     protected final Sprite btnFreeSpace;
     protected final Sprite btnClaim;
     protected final Sprite btnCloseLight;
@@ -69,7 +70,7 @@ public abstract class Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         BACK_THRESHOLD,
                         getPushMsgLog(BACK_NAME));
-        this.btnOkYellow =
+        this.btnOk =
                 new Sprite(
                         getAssetRootPath(OK_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
@@ -120,11 +121,11 @@ public abstract class Module {
     }
 
     protected Path getAssetPath(String file_name) {
-        return Paths.get(App.getAssetDirName()).resolve(getKey()).resolve(file_name);
+        return Paths.get(getKey()).resolve(file_name);
     }
 
     protected Path getAssetRootPath(String file_name) {
-        return Paths.get(App.getAssetDirName()).resolve(file_name);
+        return Paths.get(file_name);
     }
 
     private String getAssetFilePath(String file) {

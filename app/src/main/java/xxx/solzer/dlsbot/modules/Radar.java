@@ -15,7 +15,7 @@ public class Radar extends Module {
     private static final String KEY = "radar";
 
     private static final String RADAR_FILE = "radar.png";
-    private static final double RADAR_THRESHOLD = 0.9;
+    private static final double RADAR_THRESHOLD = 0.6;
     private static final String RADAR_NAME = "Радар";
 
     private static final String BOX_VIOLET_FILE = "box_violet.png";
@@ -25,30 +25,50 @@ public class Radar extends Module {
     private static final String BOX_GOLD_FILE = "box_gold.png";
     private static final double BOX_GOLD_THRESHOLD = 0.6;
     private static final String BOX_GOLD_NAME = "Парашют";
+
+    private static final String BOX_RED_FILE = "box_red.png";
+    private static final double BOX_RED_THRESHOLD = 0.6;
+    private static final String BOX_RED_NAME = "Парашют";
     
-    private static final String TRUCK_FILE = "truck_gold.png";
-    private static final double TRUCK_THRESHOLD = 0.55;
-    private static final String TRUCK_NAME = "Грузовик";
+    private static final String TRUCK_RED_FILE = "truck_red.png";
+    private static final double TRUCK_RED_THRESHOLD = 0.6;
+    private static final String TRUCK_RED_NAME = "Грузовик";
+    
+    private static final String TRUCK_GOLD_FILE = "truck_gold.png";
+    private static final double TRUCK_GOLD_THRESHOLD = 0.6;
+    private static final String TRUCK_GOLD_NAME = "Грузовик";
+    
+    private static final String TRUCK_VIOLET_FILE = "truck_violet.png";
+    private static final double TRUCK_VIOLET_THRESHOLD = 0.6;
+    private static final String TRUCK_VIOLET_NAME = "Грузовик";
     
     private static final String COLLECT_FILE = "collect.png";
-    private static final double COLLECT_THRESHOLD = 0.90;
+    private static final double COLLECT_THRESHOLD = 0.8;
     private static final String COLLECT_NAME = "Собрать";
 
     private static final String NEXT_FILE = "next.png";
-    private static final double NEXT_THRESHOLD = 0.90;
+    private static final double NEXT_THRESHOLD = 0.8;
     private static final String NEXT_NAME = "Вперед";
 
     private static final String TRANSPORT_FILE = "transport.png";
-    private static final double TRANSPORT_THRESHOLD = 0.90;
+    private static final double TRANSPORT_THRESHOLD = 0.8;
     private static final String TRANSPORT_NAME = "Транспортировать";
 
+    private static final String CLOSE_FILE = "close.png";
+    private static final double CLOSE_THRESHOLD = 0.8;
+    private static final String CLOSE_NAME = "Закрыть окно";
+
     private final Sprite btnRadar;
-    private final Sprite btnBoxViolet;
+    private final Sprite btnBoxRed;
     private final Sprite btnBoxGold;
-    private final Sprite btnTruck;
+    private final Sprite btnBoxViolet;
+    private final Sprite btnTruckRed;
+    private final Sprite btnTruckGold;
+    private final Sprite btnTruckViolet;
     private final Sprite btnCollect;
     private final Sprite btnNext;
     private final Sprite btnTransport;
+    private final Sprite btnClose;
 
     public Radar(){
         this.btnRadar =
@@ -57,24 +77,42 @@ public class Radar extends Module {
                         Imgproc.TM_CCORR_NORMED,
                         RADAR_THRESHOLD,
                         getPushMsgLog(RADAR_NAME));
-        this.btnBoxViolet =
+        this.btnBoxRed =
                 new Sprite(
-                        getAssetPath(BOX_VIOLET_FILE),
+                        getAssetPath(BOX_RED_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        BOX_VIOLET_THRESHOLD,
-                        getPushMsgLog(BOX_VIOLET_NAME));
+                        BOX_RED_THRESHOLD,
+                        getPushMsgLog(BOX_RED_NAME));
         this.btnBoxGold =
                 new Sprite(
                         getAssetPath(BOX_GOLD_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
                         BOX_GOLD_THRESHOLD,
                         getPushMsgLog(BOX_GOLD_NAME));
-        this.btnTruck =
+        this.btnBoxViolet =
                 new Sprite(
-                        getAssetPath(TRUCK_FILE),
+                        getAssetPath(BOX_VIOLET_FILE),
                         Imgproc.TM_CCOEFF_NORMED,
-                        TRUCK_THRESHOLD,
-                        getPushMsgLog(TRUCK_NAME));
+                        BOX_VIOLET_THRESHOLD,
+                        getPushMsgLog(BOX_VIOLET_NAME));
+        this.btnTruckRed =
+                new Sprite(
+                        getAssetPath(TRUCK_RED_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        TRUCK_RED_THRESHOLD,
+                        getPushMsgLog(TRUCK_RED_NAME));
+        this.btnTruckGold =
+                new Sprite(
+                        getAssetPath(TRUCK_GOLD_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        TRUCK_GOLD_THRESHOLD,
+                        getPushMsgLog(TRUCK_GOLD_NAME));
+        this.btnTruckViolet =
+                new Sprite(
+                        getAssetPath(TRUCK_VIOLET_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        TRUCK_VIOLET_THRESHOLD,
+                        getPushMsgLog(TRUCK_VIOLET_NAME));
         this.btnCollect =
                 new Sprite(
                         getAssetPath(COLLECT_FILE),
@@ -93,6 +131,12 @@ public class Radar extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         TRANSPORT_THRESHOLD,
                         getPushMsgLog(TRANSPORT_NAME));
+        this.btnClose =
+                new Sprite(
+                        getAssetPath(CLOSE_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        CLOSE_THRESHOLD,
+                        getPushMsgLog(CLOSE_NAME));
     }
 
     public void run(CommandService.StateToken state) {
@@ -104,7 +148,7 @@ public class Radar extends Module {
         if(btnRadar.pushIfExists(2000)){
             
             while (state.isRunning()) {
-                if(btnBoxViolet.pushIfExists(1500) || btnBoxGold.pushIfExists(1500)){
+                if(btnBoxRed.pushIfExists(1500) || btnBoxGold.pushIfExists(1500) || btnBoxViolet.pushIfExists(1500)){
                     if(btnNext.pushIfExists(2000)){
                         if(btnCollect.pushIfExists(2000)){
                             if(btnRadar.pushIfExists(2000)){
@@ -113,10 +157,10 @@ public class Radar extends Module {
                         }
                     }
                 }
-                if(btnTruck.pushIfExists(1500)){
+                if(btnTruckRed.pushIfExists(1500) || btnTruckGold.pushIfExists(1500) || btnTruckViolet.pushIfExists(1500)){
                     if(btnNext.pushIfExists(2000)){
                         if(btnTransport.pushIfExists(2000)){
-                            if(btnOkYellow.pushIfExists(1500)){
+                            if(btnOk.pushIfExists(1500)){
                                 if(btnRadar.pushIfExists(2000)){
                                     continue;
                                 }
@@ -135,7 +179,7 @@ public class Radar extends Module {
                 if(btnBack.pushIfExists(mat, 1000)) {
                     continue;
                 }
-                if(btnCloseDark.pushIfExists(mat, 1000)) {
+                if(btnClose.pushIfExists(mat, 1000)) {
                     continue;
                 }
                 if(btnHome.pushIfExists(mat, 2000)) {

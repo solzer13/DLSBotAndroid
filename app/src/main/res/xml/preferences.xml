@@ -7,13 +7,11 @@
         
         <SwitchPreferenceCompat
             android:key="bounty"
-            android:enabled="true"
             android:defaultValue="false"
             android:title="Охота за призом"/>
         
         <SwitchPreferenceCompat
             android:key="water"
-            android:enabled="true"
             android:defaultValue="false"
             android:title="Война за воду"/>
 
@@ -114,49 +112,50 @@
         
         <SwitchPreferenceCompat
             android:key="help"
-            android:enabled="true"
+            android:defaultValue="false"
             android:title="Помощь"
             android:summary="Нажимать кнопку помощи"/>
         
         <SwitchPreferenceCompat
             android:key="police"
-            android:enabled="true"
+            android:defaultValue="false"
             android:title="Полицейский участок"
             android:summary="Запускать поиск в полицейском участке"/>
         
         <SwitchPreferenceCompat
             android:key="radar"
-            android:enabled="false"
+            android:defaultValue="false"
             android:title="Радар"
             android:summary="Выполнять задания с радара"/>
         
         <SwitchPreferenceCompat
             android:key="collecting_home"
-            android:enabled="true"
+            android:defaultValue="false"
             android:title="Ресурсы в убежище"
             android:summary="Собирать ресурсы в убежище"/>
         
         <SwitchPreferenceCompat
             android:key="switch"
+            android:defaultValue="false"
             android:enabled="false"
             android:title="Взносы в технологии"
             android:summary="Делать взносы в технологии альянса"/>
         
         <SwitchPreferenceCompat
             android:key="alliance_gifts"
-            android:enabled="true"
+            android:defaultValue="false"
             android:title="Подарки"
             android:summary="Собирать подарки альянса"/>
         
         <SwitchPreferenceCompat
-            android:key="switch"
-            android:enabled="false"
+            android:key="garage"
+            android:defaultValue="false"
             android:title="Гараж"
             android:summary="Запускать производство в гараже"/>
         
         <SwitchPreferenceCompat
             android:key="airdrop"
-            android:enabled="true"
+            android:defaultValue="false"
             android:title="Эйрдроп"
             android:summary="Собирать эйрдропы"/>
         
