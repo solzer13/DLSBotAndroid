@@ -25,6 +25,7 @@ import xxx.solzer.dlsbot.modules.AirDrop;
 import xxx.solzer.dlsbot.modules.AllianceGifts;
 import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
+import xxx.solzer.dlsbot.modules.DonateTechnologies;
 import xxx.solzer.dlsbot.modules.Garage;
 import xxx.solzer.dlsbot.modules.Help;
 import xxx.solzer.dlsbot.modules.Police;
@@ -70,6 +71,7 @@ public class App extends Application {
             new CollectingHome(),
             new AirDrop(),
             new Garage(),
+            new DonateTechnologies(),
             new Police(),
             new Radar(),
             new AllianceGifts(),

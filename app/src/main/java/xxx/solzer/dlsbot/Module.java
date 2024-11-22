@@ -18,6 +18,10 @@ public abstract class Module {
     private static final double REGION_THRESHOLD = 0.9;
     private static final String REGION_NAME = "Регион";
 
+    private static final String ALLIANCE_FILE = "alliance.png";
+    private static final double ALLIANCE_THRESHOLD = 0.9;
+    private static final String ALLIANCE_NAME = "Альянс";
+
     private static final String BACK_FILE = "back.png";
     private static final double BACK_THRESHOLD = 0.6;
     private static final String BACK_NAME = "Назад";
@@ -44,6 +48,7 @@ public abstract class Module {
 
     protected final Sprite btnHome;
     protected final Sprite btnRegion;
+    protected final Sprite btnAlliance;
     protected final Sprite btnBack;
     protected final Sprite btnOk;
     protected final Sprite btnFreeSpace;
@@ -64,6 +69,13 @@ public abstract class Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         REGION_THRESHOLD,
                         getPushMsgLog(REGION_NAME));
+
+        this.btnAlliance =
+                new Sprite(
+                        getAssetRootPath(ALLIANCE_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        ALLIANCE_THRESHOLD,
+                        getPushMsgLog(ALLIANCE_NAME));
         this.btnBack =
                 new Sprite(
                         getAssetRootPath(BACK_FILE),

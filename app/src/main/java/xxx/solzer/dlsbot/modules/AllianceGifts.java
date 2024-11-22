@@ -14,10 +14,6 @@ public class AllianceGifts extends Module {
     private static final String TAG = "AllianceGifts";
     private static final String KEY = "alliance_gifts";
 
-    private static final String ALLIANCE_FILE = "alliance.png";
-    private static final double ALLIANCE_THRESHOLD = 0.9;
-    private static final String ALLIANCE_NAME = "Альянс";
-
     private static final String GIFTS_FILE = "gifts.png";
     private static final double GIFTS_THRESHOLD = 0.9;
     private static final String GIFTS_NAME = "Подарки";
@@ -42,7 +38,6 @@ public class AllianceGifts extends Module {
     private static final double CONGRATS_THRESHOLD = 0.8;
     private static final String CONGRATS_NAME = "Пустое место";
     
-    private final Sprite btnAlliance;
     private final Sprite btnGifts;
     private final Sprite btnClaim;
     private final Sprite btnClaimAll;
@@ -53,12 +48,6 @@ public class AllianceGifts extends Module {
     public AllianceGifts() {
         super();
 
-        this.btnAlliance =
-                new Sprite(
-                        getAssetPath(ALLIANCE_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        ALLIANCE_THRESHOLD,
-                        getPushMsgLog(ALLIANCE_NAME));
         this.btnGifts =
                 new Sprite(
                         getAssetPath(GIFTS_FILE),

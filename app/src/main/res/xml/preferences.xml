@@ -135,9 +135,8 @@
             android:summary="Собирать ресурсы в убежище"/>
         
         <SwitchPreferenceCompat
-            android:key="switch"
+            android:key="donate_technologies"
             android:defaultValue="false"
-            android:enabled="false"
             android:title="Взносы в технологии"
             android:summary="Делать взносы в технологии альянса"/>
         
