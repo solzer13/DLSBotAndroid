@@ -7,11 +7,13 @@
         
         <SwitchPreferenceCompat
             android:key="bounty"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Охота за призом"/>
         
         <SwitchPreferenceCompat
             android:key="water"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Война за воду"/>
 
@@ -112,48 +114,56 @@
         
         <SwitchPreferenceCompat
             android:key="help"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Помощь"
             android:summary="Нажимать кнопку помощи"/>
         
         <SwitchPreferenceCompat
             android:key="police"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Полицейский участок"
             android:summary="Запускать поиск в полицейском участке"/>
         
         <SwitchPreferenceCompat
             android:key="radar"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Радар"
             android:summary="Выполнять задания с радара"/>
         
         <SwitchPreferenceCompat
             android:key="collecting_home"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Ресурсы в убежище"
             android:summary="Собирать ресурсы в убежище"/>
         
         <SwitchPreferenceCompat
             android:key="donate_technologies"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Взносы в технологии"
             android:summary="Делать взносы в технологии альянса"/>
         
         <SwitchPreferenceCompat
             android:key="alliance_gifts"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Подарки"
             android:summary="Собирать подарки альянса"/>
         
         <SwitchPreferenceCompat
             android:key="garage"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Гараж"
             android:summary="Запускать производство в гараже"/>
         
         <SwitchPreferenceCompat
             android:key="airdrop"
+            app:enabled="false"
             android:defaultValue="false"
             android:title="Эйрдроп"
             android:summary="Собирать эйрдропы"/>

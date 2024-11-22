@@ -1,8 +1,7 @@
 package xxx.solzer.dlsbot;
 
-import android.graphics.Bitmap;
 import android.util.Log;
-import java.io.InputStream;
+
 import java.nio.file.Path;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -15,20 +14,27 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 public class Sprite {
     
     private final Path path;
-    private final double trashold;
+    private final double threshold;
     private final int type;
     private String logMessage;
     private double scale;
     
-    public Sprite(Path file, int type, double trashold){
+    public Sprite(Path file, int type, double threshold){
         this.path = file;
         this.type = type;
-        this.trashold = trashold;
-        this.scale = App.getCurrentScreen().scaleInterface;
+        this.threshold = threshold;
+
+        var screen = App.getCurrentScreen();
+        if(screen != null){
+            this.scale = screen.scaleInterface;
+        }
+        else {
+            this.scale = 1;
+        }
     }
     
-    public Sprite(Path file, int type, double trashold, String msg){
-        this(file, type, trashold);
+    public Sprite(Path file, int type, double threshold, String msg){
+        this(file, type, threshold);
         this.logMessage = msg;
     }
     
@@ -107,7 +113,7 @@ public class Sprite {
     }
      
     public Point find(Mat mat){
-        return findImage(mat, this.path, this.type, this.trashold);
+        return findImage(mat, this.path, this.type, this.threshold);
     }
     
     public static Mat scale(Mat source, double scale){

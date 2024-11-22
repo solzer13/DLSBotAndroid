@@ -16,6 +16,7 @@
             android:id="@+id/mainMaterialToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/title"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/top_app_bar"
             app:title="DLSBotAndroid" />

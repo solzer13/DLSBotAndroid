@@ -65,19 +65,24 @@ public class App extends Application {
                 .build();
         
         userLog = new UserLog();
-        
-        modules = new ModuleRepository(
-            new Help(),
-            new CollectingHome(),
-            new AirDrop(),
-            new Garage(),
-            new DonateTechnologies(),
-            new Police(),
-            new Radar(),
-            new AllianceGifts(),
-            new BountyGround(),
-            new WaterWar()
-        );
+
+        if(isScreenSupported()) {
+            modules = new ModuleRepository(
+                    new Help(),
+                    new CollectingHome(),
+                    new AirDrop(),
+                    new Garage(),
+                    new DonateTechnologies(),
+                    new Police(),
+                    new Radar(),
+                    new AllianceGifts(),
+                    new BountyGround(),
+                    new WaterWar()
+            );
+        }
+        else {
+            modules = new ModuleRepository();
+        }
         
         bus.register(userLog);
         bus.register(modules);
