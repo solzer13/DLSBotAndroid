@@ -21,7 +21,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import xxx.solzer.dlsbot.modules.AirDrop;
 import xxx.solzer.dlsbot.modules.AllianceGifts;
 import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
@@ -70,7 +69,6 @@ public class App extends Application {
             modules = new ModuleRepository(
                     new Help(),
                     new CollectingHome(),
-                    new AirDrop(),
                     new Garage(),
                     new DonateTechnologies(),
                     new Police(),

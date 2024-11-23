@@ -77,7 +77,7 @@ public class DonateTechnologies extends Module {
                 if(btnSelected.pushTimeout(state)){
                     while(state.isRunning()) {
                     	Mat mat = CommandService.takeScreenMat();
-                        if(btnDonateEnable.pushTimeout(state)){
+                        if(btnDonateEnable.pushIfExists(mat)){
                             continue;
                         }
                         if(btnDonateDisable.isFound(mat)){
@@ -93,13 +93,13 @@ public class DonateTechnologies extends Module {
             while (state.isRunning()) {
                 Mat mat = CommandService.takeScreenMat();
 
-                if(btnBack.pushTimeout(state, mat)) {
+                if(btnBack.pushIfExists(mat)) {
                     continue;
                 }
-                if(btnCloseDark.pushTimeout(state, mat)){
+                if(btnCloseDark.pushIfExists(mat)){
                     continue;
                 }
-                if(btnHome.pushTimeout(state, mat)){
+                if(btnHome.pushIfExists(mat)){
                     continue;
                 }
                 if(btnRegion.isFound(mat)){

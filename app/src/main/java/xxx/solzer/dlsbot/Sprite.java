@@ -13,6 +13,10 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Sprite {
     
+    private static final int BEFORE_DELAY = 0;
+    private static final int TIMEOUT = 10000;
+    private static final int AFTER_DELAY = 500;
+    
     private final Path path;
     private final double threshold;
     private final int type;
@@ -47,31 +51,18 @@ public class Sprite {
     }
 
     public boolean pushTimeout(CommandService.StateToken state){
-        return pushTimeout(state, 0, 10000, 500);
-    }
-
-    public boolean pushTimeout(CommandService.StateToken state, Mat mat){
-        return pushTimeout(state, mat, 0, 10000, 500);
-    }
-
-    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay_after){
-        return pushTimeout(state, mat, 0, 10000, delay_after);
+        return pushTimeout(state, BEFORE_DELAY, TIMEOUT, AFTER_DELAY);
     }
 
     public boolean pushTimeout(CommandService.StateToken state, int delay_after){
-        return pushTimeout(state, 0, 10000, delay_after);
+        return pushTimeout(state, BEFORE_DELAY, TIMEOUT, delay_after);
     }
 
     public boolean pushTimeout(CommandService.StateToken state, int delay_before, int timeout, int delay_after){
-        return pushTimeout(state, CommandService.takeScreenMat(), delay_before, timeout, delay_after);
-    }
-
-    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay_before, int timeout, int delay_after){
-        //App.bus.post(new OnUserLog(String.valueOf(state.isRunning())));
         long started = System.currentTimeMillis();
+        delay(state, delay_before);
         while(state.isRunning()){
-            delay(state, delay_before);
-            Point point = find(mat);
+            Point point = find();
             if(point != null){
                 App.bus.post(new OnTap(point));
                 if(this.logMessage != null){
@@ -96,20 +87,28 @@ public class Sprite {
         App.sleep(sleep);
         return point != null;
     }
+    
+    public boolean pushIfExists(){
+        return pushIfExists(CommandService.takeScreenMat());
+    }
+    
+    public boolean pushIfExists(Mat mat){
+        return pushIfExists(mat, AFTER_DELAY);
+    }
 
-    public boolean pushIfExists(Mat mat, int sleep){
+    public boolean pushIfExists(Mat mat, int delay_after){
         Point point = find(mat);
         if(point != null){
             push(point);
-            App.sleep(sleep);
+            App.sleep(delay_after);
         }
         return point != null;
     }
 
-    public boolean pushIfExists(Point point, int sleep){
+    public boolean pushIfExists(Point point, int delay_after){
         if(point != null){
             push(point);
-            App.sleep(sleep);
+            App.sleep(delay_after);
         }
         return point != null;
     }

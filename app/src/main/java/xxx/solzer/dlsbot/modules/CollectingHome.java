@@ -38,9 +38,9 @@ public class CollectingHome extends Module {
 
     private final Sprite btnTomatoes;
     private final Sprite btnTomatoesFull;
-    private final Sprite btnWood;
-    private final Sprite btnSteel;
-    private final Sprite btnOil;
+//    private final Sprite btnWood;
+//    private final Sprite btnSteel;
+//    private final Sprite btnOil;
 
     public CollectingHome(){
 
@@ -60,26 +60,26 @@ public class CollectingHome extends Module {
                         getPushMsgLog(TOMATOES_FULL_NAME));
         this.btnTomatoesFull.setScale(App.getCurrentScreen().scaleMap);
         
-        this.btnWood =
-                new Sprite(
-                        getAssetPath(WOOD_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        WOOD_THRESHOLD,
-                        getPushMsgLog(WOOD_NAME));
-
-        this.btnSteel =
-                new Sprite(
-                        getAssetPath(STEEL_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        STEEL_THRESHOLD,
-                        getPushMsgLog(STEEL_NAME));
-
-        this.btnOil =
-                new Sprite(
-                        getAssetPath(OIL_FILE),
-                        Imgproc.TM_CCOEFF_NORMED,
-                        OIL_THRESHOLD,
-                        getPushMsgLog(OIL_NAME));
+//        this.btnWood =
+//                new Sprite(
+//                        getAssetPath(WOOD_FILE),
+//                        Imgproc.TM_CCOEFF_NORMED,
+//                        WOOD_THRESHOLD,
+//                        getPushMsgLog(WOOD_NAME));
+//
+//        this.btnSteel =
+//                new Sprite(
+//                        getAssetPath(STEEL_FILE),
+//                        Imgproc.TM_CCOEFF_NORMED,
+//                        STEEL_THRESHOLD,
+//                        getPushMsgLog(STEEL_NAME));
+//
+//        this.btnOil =
+//                new Sprite(
+//                        getAssetPath(OIL_FILE),
+//                        Imgproc.TM_CCOEFF_NORMED,
+//                        OIL_THRESHOLD,
+//                        getPushMsgLog(OIL_NAME));
 
     }
 
@@ -96,17 +96,17 @@ public class CollectingHome extends Module {
             return;
         }
 
-        if(btnWood.pushIfExists(mat, 1000)){
-            return;
-        }
-
-        if(btnSteel.pushIfExists(mat, 1000)){
-            return;
-        }
-
-        if(btnOil.pushIfExists(mat, 1000)){
-            return;
-        }
+//        if(btnWood.pushIfExists(mat, 1000)){
+//            return;
+//        }
+//
+//        if(btnSteel.pushIfExists(mat, 1000)){
+//            return;
+//        }
+//
+//        if(btnOil.pushIfExists(mat, 1000)){
+//            return;
+//        }
     }
 
     @Override

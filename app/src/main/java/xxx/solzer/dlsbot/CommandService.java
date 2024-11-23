@@ -117,7 +117,6 @@ public class CommandService extends AccessibilityService {
         while(this.state.isRunning()) {
             for(var module : modules){
                 module.run(this.state);
-                try{Thread.sleep(1000);}catch(Exception e){}
             }
         }
     }
