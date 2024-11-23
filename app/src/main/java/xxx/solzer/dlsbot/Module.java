@@ -114,7 +114,7 @@ public abstract class Module {
                         getPushMsgLog(CLOSE_DARK_NAME));
     }
 
-    public abstract void run(CommandService.StateToken state);
+    public abstract void run(CommandService.StateToken state, Mat mat);
 
     public abstract String getKey();
 

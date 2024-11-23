@@ -115,8 +115,9 @@ public class CommandService extends AccessibilityService {
         this.state.start();
         var modules = App.modules.getActiveModules();
         while(this.state.isRunning()) {
+            Mat mat = takeScreenMat();
             for(var module : modules){
-                module.run(this.state);
+                module.run(this.state, mat);
             }
         }
     }

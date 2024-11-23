@@ -85,13 +85,11 @@ public class BountyGround extends Module {
                         SELECTION_THRESHOLD);
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
 
         if (App.DEBUG) {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
-
-        Mat mat = CommandService.takeScreenMat();
 
         if (wndProcess.find(mat) == null
                 && wndSelection.find(mat) == null

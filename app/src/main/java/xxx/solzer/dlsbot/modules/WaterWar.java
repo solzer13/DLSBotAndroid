@@ -116,71 +116,63 @@ public class WaterWar extends Module {
     }
     
     @Override
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
         if (App.DEBUG) {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        int counter = 0;
-        
-        while(state.isRunning()){
-            if(btnBanner.pushIfExists(1000)){
-                break;
-            }
-            if(counter > 5){
-                return;
-            }
-            counter++;
-        }
-
-        Mat mat = CommandService.takeScreenMat();
-
-        if(btnWaterDark.pushIfExists(mat, 1000)){
+        if(btnBanner.pushTimeout(state, 0, 5000, 500)){
+            
             mat = CommandService.takeScreenMat();
+    
+            if(btnWaterDark.pushIfExists(mat, 1000)){
+                mat = CommandService.takeScreenMat();
+            }
+    
+            if(btnPick.pushIfExists(mat, 1000)){
+                while(state.isRunning()){
+                    mat = CommandService.takeScreenMat();
+                    if(btnReady.pushIfExists(mat,1000)){
+                        continue;
+                    }
+                    if(btnVS.isFound(mat)){
+                        break;
+                    }
+                    App.sleep(1000);
+                }
+                while(state.isRunning()){
+                    mat = CommandService.takeScreenMat();
+                    if(btnVS.pushIfExists(mat,2000)){
+                        continue;
+                    }
+                    if(wndEnd.isFound(mat)){
+                        logUserMsg("Матч завершен");
+                        break;
+                    }
+                    App.sleep(2000);
+                }
+                while(state.isRunning()){
+                    mat = CommandService.takeScreenMat();
+                    if(wndEnd.pushIfExists(mat, 1000)){
+                        continue;
+                    }
+                    if(btnSkip.pushIfExists(mat, 1000)){
+                        continue;
+                    }
+                    if(btnExit.pushIfExists(mat, 1000)){
+                        continue;
+                    }
+                    if(btnBack.pushIfExists(mat, 1000)){
+                        continue;
+                    }
+                    if(btnRegion.isFound(mat)){
+                        break;
+                    }
+                    App.sleep(1000);
+                }
+            }
         }
-
-        if(btnPick.pushIfExists(mat, 1000)){
-            while(state.isRunning()){
-                mat = CommandService.takeScreenMat();
-                if(btnReady.pushIfExists(mat,1000)){
-                    continue;
-                }
-                if(btnVS.isFound(mat)){
-                    break;
-                }
-                App.sleep(1000);
-            }
-            while(state.isRunning()){
-                mat = CommandService.takeScreenMat();
-                if(btnVS.pushIfExists(mat,2000)){
-                    continue;
-                }
-                if(wndEnd.isFound(mat)){
-                    logUserMsg("Матч завершен");
-                    break;
-                }
-                App.sleep(2000);
-            }
-            while(state.isRunning()){
-                mat = CommandService.takeScreenMat();
-                if(wndEnd.pushIfExists(mat, 1000)){
-                    continue;
-                }
-                if(btnSkip.pushIfExists(mat, 1000)){
-                    continue;
-                }
-                if(btnExit.pushIfExists(mat, 1000)){
-                    continue;
-                }
-                if(btnBack.pushIfExists(mat, 1000)){
-                    continue;
-                }
-                if(btnRegion.isFound(mat)){
-                    break;
-                }
-                App.sleep(1000);
-            }
-        }
+    
     }
 
     @Override

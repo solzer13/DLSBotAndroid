@@ -66,17 +66,17 @@ public class DonateTechnologies extends Module {
 
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
         
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        if(btnAlliance.pushTimeout(state)){
+        if(btnAlliance.pushIfExists(mat)){
             if(btnTechnologies.pushTimeout(state)){
                 if(btnSelected.pushTimeout(state)){
                     while(state.isRunning()) {
-                    	Mat mat = CommandService.takeScreenMat();
+                        mat = CommandService.takeScreenMat();
                         if(btnDonateEnable.pushIfExists(mat)){
                             continue;
                         }
@@ -91,7 +91,7 @@ public class DonateTechnologies extends Module {
             }
             
             while (state.isRunning()) {
-                Mat mat = CommandService.takeScreenMat();
+                mat = CommandService.takeScreenMat();
 
                 if(btnBack.pushIfExists(mat)) {
                     continue;

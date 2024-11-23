@@ -92,13 +92,13 @@ public class Garage extends Module {
                         getPushMsgLog(PRODUCE_NAME));
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
         
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        if(btnGarage.pushIfExists(1500)){
+        if(btnGarage.pushIfExists(mat)){
             if(btnDetailsGold.pushIfExists(1500) || btnDetailsViolet.pushIfExists(1500) || btnDetailsBlue.pushIfExists(1500)){
                 btnCongrats.pushIfExists(2000);
             }
@@ -106,7 +106,7 @@ public class Garage extends Module {
             while(btnProduce.pushIfExists(500));
 
             while (state.isRunning()) {
-                Mat mat = CommandService.takeScreenMat();
+                mat = CommandService.takeScreenMat();
 
                 if(btnBack.pushIfExists(mat, 1000)) {
                     continue;

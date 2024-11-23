@@ -32,13 +32,13 @@ public class Help extends Module {
 
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
         
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        btnHelp.pushIfExists(1000);
+        btnHelp.pushIfExists(mat);
     }
     
     public String getKey(){

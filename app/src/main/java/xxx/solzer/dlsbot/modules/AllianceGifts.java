@@ -20,7 +20,7 @@ public class AllianceGifts extends Module {
 
     private static final String GET_FILE = "get.png";
     private static final double GET_THRESHOLD = 0.8;
-    private static final String GET_NAME = "Собрать";
+    private static final String GET_NAME = "Получить";
 
     private static final String GET_ALL_FILE = "get_all.png";
     private static final double GET_ALL_THRESHOLD = 0.9;
@@ -35,7 +35,7 @@ public class AllianceGifts extends Module {
     private static final String PURCHASES_GIFTS_NAME = "Награда за покупки";
 
     private static final String CONGRATS_FILE = "congrats.png";
-    private static final double CONGRATS_THRESHOLD = 0.8;
+    private static final double CONGRATS_THRESHOLD = 0.7;
     private static final String CONGRATS_NAME = "Пустое место";
     
     private final Sprite btnGifts;
@@ -86,47 +86,47 @@ public class AllianceGifts extends Module {
                         getPushMsgLog(CONGRATS_NAME));
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
 
         if (App.DEBUG) {
             logUserMsg("Start");
         }
 
-        if(this.btnAlliance.pushIfExists(1500)){
-            if(this.btnGifts.pushIfExists(1500)){
+        if(this.btnAlliance.pushIfExists(mat)){
+            if(this.btnGifts.pushTimeout(state)){
 
-                if(this.btnActivityGifts.pushIfExists(1500)){
-                    if(btnClaimAll.pushIfExists(2000)){
-                        btnCongrats.pushIfExists(1500);
+                if(this.btnActivityGifts.pushTimeout(state)){
+                    if(btnClaim.isFound()){
+                        if(btnClaimAll.pushTimeout(state)){
+                            btnCongrats.pushTimeout(state);
+                        }
                     }
+                }
+
+                if(this.btnPurchasesGifts.pushTimeout(state)) {
                     while (state.isRunning()) {
-                        if (!this.btnClaim.pushIfExists(500)) {
+                        if (!this.btnClaim.pushIfExists()) {
                             break;
                         }
                     }
                 }
 
-                if(this.btnPurchasesGifts.pushIfExists(1500)) {
-                    while (state.isRunning()) {
-                        if (!this.btnClaim.pushIfExists(500)) {
-                            break;
-                        }
-                    }
+            }
+            
+            while (state.isRunning()) {
+                mat = CommandService.takeScreenMat();
+                if (btnBack.pushIfExists(mat)){
+                    continue;
                 }
-
+                if (btnCongrats.pushIfExists(mat)){
+                    continue;
+                }
+                if (btnRegion.isFound(mat)) {
+                    return;
+                }
             }
         }
 
-        while (state.isRunning()) {
-            Mat mat = CommandService.takeScreenMat();
-            if (btnBack.pushIfExists(mat, 1500)){
-                continue;
-            }
-            if (btnRegion.isFound(mat)) {
-                return;
-            }
-            App.sleep(1000);
-        }
     }
 
     public String getKey() {

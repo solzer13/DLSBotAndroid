@@ -84,15 +84,13 @@ public class CollectingHome extends Module {
     }
 
     @Override
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
     
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
 
-        Mat mat = CommandService.takeScreenMat();
-
-        if(btnTomatoes.pushIfExists(mat, 1000) || btnTomatoesFull.pushIfExists(mat, 1000)){
+        if(btnTomatoes.pushIfExists(mat) || btnTomatoesFull.pushIfExists(mat)){
             return;
         }
 

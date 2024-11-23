@@ -66,49 +66,48 @@ public class Police extends Module {
                         getPushMsgLog(SEARCH_YELLOW_NAME));
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
 
         if (App.DEBUG) {
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
 
-        if (btnDrone.pushIfExists(1500)) {
-            if (btnDeploy.pushIfExists(1500)) {
+        if (btnDrone.pushIfExists(mat)) {
+            if (btnDeploy.pushTimeout(state)) {
                 while (state.isRunning()) {
-                    Mat mat = CommandService.takeScreenMat();
+                    Mat mat_exit = CommandService.takeScreenMat();
 
-                    if (btnBack.pushIfExists(mat, 1000)) {
+                    if (btnBack.pushIfExists(mat_exit)) {
                         continue;
                     }
 
-                    if (btnRegion.isFound(mat)) {
+                    else if (btnRegion.isFound(mat_exit)) {
                         break;
                     }
                 }
             }
-        }
-
-        if (btnPolice.pushIfExists(1500)) {
-            btnSearch.pushIfExists(1500);
+        } 
+        else if (btnPolice.pushIfExists(mat)) {
+            btnSearch.pushTimeout(state);
+                        
             while (state.isRunning()) {
-                Mat mat = CommandService.takeScreenMat();
+                Mat mat_exit = CommandService.takeScreenMat();
 
-                if (btnSearch.pushIfExists(mat, 1500)) {
+                if (btnSearch.pushIfExists(mat_exit)) {
                     continue;
                 }
 
-                if (btnOk.pushIfExists(mat, 1500)) {
+                else if (btnOk.pushIfExists(mat_exit)) {
                     continue;
                 }
 
-                if (btnBack.pushIfExists(mat, 1500)) {
+                else if (btnBack.pushIfExists(mat_exit)) {
                     continue;
                 }
 
-                if (btnRegion.isFound(mat)) {
+                else if (btnRegion.isFound(mat_exit)) {
                     break;
                 }
-                App.sleep(1000);
             }
         }
     }

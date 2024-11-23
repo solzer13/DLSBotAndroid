@@ -19,27 +19,27 @@ public class Radar extends Module {
     private static final String RADAR_NAME = "Радар";
 
     private static final String BOX_VIOLET_FILE = "box_violet.png";
-    private static final double BOX_VIOLET_THRESHOLD = 0.6;
+    private static final double BOX_VIOLET_THRESHOLD = 0.55;
     private static final String BOX_VIOLET_NAME = "Парашют";
 
     private static final String BOX_GOLD_FILE = "box_gold.png";
-    private static final double BOX_GOLD_THRESHOLD = 0.6;
+    private static final double BOX_GOLD_THRESHOLD = 0.55;
     private static final String BOX_GOLD_NAME = "Парашют";
 
     private static final String BOX_RED_FILE = "box_red.png";
-    private static final double BOX_RED_THRESHOLD = 0.6;
+    private static final double BOX_RED_THRESHOLD = 0.55;
     private static final String BOX_RED_NAME = "Парашют";
     
     private static final String TRUCK_RED_FILE = "truck_red.png";
-    private static final double TRUCK_RED_THRESHOLD = 0.6;
+    private static final double TRUCK_RED_THRESHOLD = 0.55;
     private static final String TRUCK_RED_NAME = "Грузовик";
     
     private static final String TRUCK_GOLD_FILE = "truck_gold.png";
-    private static final double TRUCK_GOLD_THRESHOLD = 0.6;
+    private static final double TRUCK_GOLD_THRESHOLD = 0.55;
     private static final String TRUCK_GOLD_NAME = "Грузовик";
     
     private static final String TRUCK_VIOLET_FILE = "truck_violet.png";
-    private static final double TRUCK_VIOLET_THRESHOLD = 0.6;
+    private static final double TRUCK_VIOLET_THRESHOLD = 0.55;
     private static final String TRUCK_VIOLET_NAME = "Грузовик";
     
     private static final String COLLECT_FILE = "collect.png";
@@ -139,29 +139,30 @@ public class Radar extends Module {
                         getPushMsgLog(CLOSE_NAME));
     }
 
-    public void run(CommandService.StateToken state) {
+    public void run(CommandService.StateToken state, Mat mat) {
         
         if(App.DEBUG){
             App.bus.post(new OnUserLog(TAG + ": Start"));
         }
         
-        if(btnRadar.pushIfExists(2000)){
+        if(btnRadar.pushIfExists(mat, 2000)){
             
             while (state.isRunning()) {
-                if(btnBoxRed.pushIfExists(1500) || btnBoxGold.pushIfExists(1500) || btnBoxViolet.pushIfExists(1500)){
-                    if(btnNext.pushIfExists(2000)){
-                        if(btnCollect.pushIfExists(2000)){
-                            if(btnRadar.pushIfExists(2000)){
+                mat = CommandService.takeScreenMat();
+                if(btnBoxRed.pushIfExists(mat) || btnBoxGold.pushIfExists(mat) || btnBoxViolet.pushIfExists(mat)){
+                    if(btnNext.pushTimeout(state)){
+                        if(btnCollect.pushTimeout(state)){
+                            if(btnRadar.pushTimeout(state)){
                                 continue;
                             }
                         }
                     }
                 }
-                if(btnTruckRed.pushIfExists(1500) || btnTruckGold.pushIfExists(1500) || btnTruckViolet.pushIfExists(1500)){
-                    if(btnNext.pushIfExists(2000)){
-                        if(btnTransport.pushIfExists(2000)){
-                            if(btnOk.pushIfExists(1500)){
-                                if(btnRadar.pushIfExists(2000)){
+                else if(btnTruckRed.pushIfExists(mat) || btnTruckGold.pushIfExists(mat) || btnTruckViolet.pushIfExists(mat)){
+                    if(btnNext.pushTimeout(state)){
+                        if(btnTransport.pushTimeout(state)){
+                            if(btnOk.pushTimeout(state)){
+                                if(btnRadar.pushTimeout(state)){
                                     continue;
                                 }
                             }
@@ -174,18 +175,18 @@ public class Radar extends Module {
             }
             
             while (state.isRunning()) {
-                Mat mat = CommandService.takeScreenMat();
+                Mat mat_exit = CommandService.takeScreenMat();
 
-                if(btnBack.pushIfExists(mat, 1000)) {
+                if(btnBack.pushIfExists(mat_exit, 1000)) {
                     continue;
                 }
-                if(btnClose.pushIfExists(mat, 1000)) {
+                if(btnClose.pushIfExists(mat_exit, 1000)) {
                     continue;
                 }
-                if(btnHome.pushIfExists(mat, 2000)) {
+                if(btnHome.pushIfExists(mat_exit, 2000)) {
                     continue;
                 }
-                if(btnRegion.isFound(mat)){
+                if(btnRegion.isFound(mat_exit)){
                     break;
                 }
             }
