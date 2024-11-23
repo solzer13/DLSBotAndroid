@@ -67,6 +67,7 @@ public class Sprite {
     }
 
     public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay_before, int timeout, int delay_after){
+        //App.bus.post(new OnUserLog(String.valueOf(state.isRunning())));
         long started = System.currentTimeMillis();
         while(state.isRunning()){
             delay(state, delay_before);
