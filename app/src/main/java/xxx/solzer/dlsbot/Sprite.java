@@ -47,35 +47,40 @@ public class Sprite {
     }
 
     public boolean pushTimeout(CommandService.StateToken state){
-        return pushTimeout(state, 200, 10000);
+        return pushTimeout(state, 0, 10000, 500);
     }
 
     public boolean pushTimeout(CommandService.StateToken state, Mat mat){
-        return pushTimeout(state, mat, 200, 10000);
+        return pushTimeout(state, mat, 0, 10000, 500);
     }
 
-    public boolean pushTimeout(CommandService.StateToken state, int delay){
-        return pushTimeout(state, delay, 10000);
+    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay_after){
+        return pushTimeout(state, mat, 0, 10000, delay_after);
     }
 
-    public boolean pushTimeout(CommandService.StateToken state, int delay, int timeout){
-        return pushTimeout(state, CommandService.takeScreenMat(), delay, timeout);
+    public boolean pushTimeout(CommandService.StateToken state, int delay_after){
+        return pushTimeout(state, 0, 10000, delay_after);
     }
 
-    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay, int timeout){
+    public boolean pushTimeout(CommandService.StateToken state, int delay_before, int timeout, int delay_after){
+        return pushTimeout(state, CommandService.takeScreenMat(), delay_before, timeout, delay_after);
+    }
+
+    public boolean pushTimeout(CommandService.StateToken state, Mat mat, int delay_before, int timeout, int delay_after){
         long started = System.currentTimeMillis();
         while(state.isRunning()){
-            if((started + delay) < System.currentTimeMillis()){
-                Point point = find(mat);
-                if(point != null){
-                    App.bus.post(new OnTap(point));
-                    if(this.logMessage != null){
-                        App.bus.post(new OnUserLog(this.logMessage + " (millis: " + (System.currentTimeMillis() - started) + ")"));
-                    }
-                    return true;
+            delay(state, delay_before);
+            Point point = find(mat);
+            if(point != null){
+                App.bus.post(new OnTap(point));
+                if(this.logMessage != null){
+                    App.bus.post(new OnUserLog(this.logMessage + " (millis: " + (System.currentTimeMillis() - started) + ")"));
                 }
+                delay(state, delay_after);
+                return true;
             }
-            if((started + delay + timeout) < System.currentTimeMillis()){
+            
+            if((started + delay_before + delay_after + timeout) < System.currentTimeMillis()){
                 break;
             }
         }
@@ -182,6 +187,15 @@ public class Sprite {
         }
         
         return null;
+    }
+    
+    public static void delay(CommandService.StateToken state, long millis){
+        long start = System.currentTimeMillis();
+        while(state.isRunning()) {
+        	if((start + millis) < System.currentTimeMillis()){
+                return;
+            }
+        }
     }
     
 }
