@@ -27,7 +27,7 @@ public abstract class Module {
     private static final String BACK_NAME = "Назад";
 
     private static final String OK_FILE = "ok.png";
-    private static final double OK_THRESHOLD = 0.7;
+    private static final double OK_THRESHOLD = 0.6;
     private static final String OK_NAME = "Ok";
 
     private static final String FREE_SPACE_FILE = "push_free_space.png";
