@@ -48,9 +48,10 @@ public class App extends Application {
     
     public static final Scalar RED = new Scalar(255, 0, 0, 255);
     
-    public static final Screen[] SCREENS = new Screen[]{ 
-        new Screen(2179, 1080, 1, 1),
-        new Screen(1340, 800, 0.695, 0.56)
+    public static final Screen[] SCREENS = new Screen[]{
+            new Screen(3200, 1440, 1.34, 1.34),
+            new Screen(2179, 1080, 1, 1),
+            new Screen(1340, 800, 0.695, 0.56)
     };
     
     public App(){
