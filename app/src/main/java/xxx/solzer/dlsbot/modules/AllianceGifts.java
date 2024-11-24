@@ -94,21 +94,14 @@ public class AllianceGifts extends Module {
 
         if(this.btnAlliance.pushIfExists(mat)){
             if(this.btnGifts.pushTimeout(state)){
+                claim(state);
 
                 if(this.btnActivityGifts.pushTimeout(state)){
-                    if(btnClaim.isFound()){
-                        if(btnClaimAll.pushTimeout(state)){
-                            btnCongrats.pushTimeout(state);
-                        }
-                    }
+                    claim(state);
                 }
 
                 if(this.btnPurchasesGifts.pushTimeout(state)) {
-                    while (state.isRunning()) {
-                        if (!this.btnClaim.pushIfExists()) {
-                            break;
-                        }
-                    }
+                    claim(state);
                 }
 
             }
@@ -127,6 +120,20 @@ public class AllianceGifts extends Module {
             }
         }
 
+    }
+
+    private void claim(CommandService.StateToken state){
+        if(btnClaim.isFound()){
+            if(btnClaimAll.pushTimeout(state)){
+                btnCongrats.pushTimeout(state);
+            } else {
+                while (state.isRunning()) {
+                    if (!this.btnClaim.pushIfExists()) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public String getKey() {
