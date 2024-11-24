@@ -66,6 +66,10 @@ public class Radar extends Module {
     private static final double CLOSE_THRESHOLD = 0.8;
     private static final String CLOSE_NAME = "Закрыть окно";
 
+    private static final String SAVE_FILE = "save.png";
+    private static final double SAVE_THRESHOLD = 0.8;
+    private static final String SAVE_NAME = "Спасти";
+
     private final Sprite btnRadar;
     private final Sprite btnBoxRed;
     private final Sprite btnBoxGold;
@@ -79,6 +83,7 @@ public class Radar extends Module {
     private final Sprite btnNext;
     private final Sprite btnTransport;
     private final Sprite btnClose;
+    private final Sprite btnSave;
 
     public Radar(){
         this.btnRadar =
@@ -159,6 +164,12 @@ public class Radar extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         CLOSE_THRESHOLD,
                         getPushMsgLog(CLOSE_NAME));
+        this.btnSave =
+                new Sprite(
+                        getAssetPath(SAVE_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        SAVE_THRESHOLD,
+                        getPushMsgLog(SAVE_NAME));
     }
 
     public void run(CommandService.StateToken state, Mat mat) {
@@ -193,7 +204,11 @@ public class Radar extends Module {
                 }
                 else if(btnSurvivorGold.pushIfExists(mat) || btnSurvivorViolet.pushIfExists(mat)){
                     if(btnNext.pushTimeout(state)){
-                        //Спасти
+                        if(btnSave.pushTimeout(state)){
+                            if(btnRadar.pushTimeout(state)){
+                                continue;
+                            }
+                        }
                     }
                 }
                 else {

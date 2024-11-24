@@ -13,7 +13,7 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Sprite {
     
-    private static final int BEFORE_DELAY = 500;
+    private static final int BEFORE_DELAY = 100;
     private static final int TIMEOUT = 5000;
     private static final int AFTER_DELAY = 500;
     
