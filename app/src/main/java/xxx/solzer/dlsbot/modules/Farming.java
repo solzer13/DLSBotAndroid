@@ -212,39 +212,42 @@ public class Farming extends Module {
         }
         
         int busy = busy(mat);
-        
-        App.bus.post(new OnUserLog(TAG + ": Busy - " + busy));
-        App.bus.post(new OnUserLog(TAG + ": farmingCount - " + farmingCount));
-        
-        while(farmingCount >= busy){
-            if(btnRegion.pushTimeout(state)) {
-                if(btnSearchIcon.pushTimeout(state)){
-                    if(btnSearchTomatoes.pushTimeout(state)){
-                        if(btnSearch.pushTimeout(state)) {
-                            if(btnArrow.pushTimeout(state)) {
-                                if(btnCollect.pushTimeout(state)) {
-                                    if(btnCreateTroop.pushTimeout(state)) {
-                                        btnMarch.pushTimeout(state);
+
+        if(farmingCount >= busy){
+            while(state.isRunning()){
+                if(farmingCount <= busy){
+                    break;
+                }
+                if(btnRegion.pushTimeout(state)) {
+                    if(btnSearchIcon.pushTimeout(state)){
+                        if(btnSearchTomatoes.pushTimeout(state)){
+                            if(btnSearch.pushTimeout(state)) {
+                                if(btnArrow.pushTimeout(state)) {
+                                    if(btnCollect.pushTimeout(state)) {
+                                        if(btnCreateTroop.pushTimeout(state)) {
+                                            btnMarch.pushTimeout(state);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            App.bus.post(new OnUserLog("Exit"));
-            while (state.isRunning()) {
-                mat = CommandService.takeScreenMat();
+                App.bus.post(new OnUserLog("Exit"));
+                while (state.isRunning()) {
+                    mat = CommandService.takeScreenMat();
 
-                if(btnBack.pushIfExists(mat, 1000)) {
-                    continue;
+                    if(btnBack.pushIfExists(mat, 1000)) {
+                        continue;
+                    }
+                    if(btnHome.pushIfExists(mat, 1000)){
+                        continue;
+                    }
+                    if(btnRegion.isFound(mat)){
+                        break;
+                    }
                 }
-                if(btnHome.pushIfExists(mat, 1000)){
-                    continue;
-                }
-                if(btnRegion.isFound(mat)){
-                    break;
-                }
+                busy = busy(CommandService.takeScreenMat());
             }
         }
     }

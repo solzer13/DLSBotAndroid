@@ -192,7 +192,9 @@ public class Radar extends Module {
                     }
                 }
                 else if(btnSurvivorGold.pushIfExists(mat) || btnSurvivorViolet.pushIfExists(mat)){
-
+                    if(btnNext.pushTimeout(state)){
+                        //Спасти
+                    }
                 }
                 else {
                     break;

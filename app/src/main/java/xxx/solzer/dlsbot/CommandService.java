@@ -21,6 +21,8 @@ import android.view.accessibility.AccessibilityEvent;
 
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.core.os.ExecutorCompat;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -37,7 +39,7 @@ import xxx.solzer.dlsbot.events.OnTap;
 import xxx.solzer.dlsbot.events.OnUserLog;
 import xxx.solzer.dlsbot.events.OnVisibleFloatingView;
 
-public class CommandService extends AccessibilityService {
+public class CommandService extends AccessibilityService implements AccessibilityService.TakeScreenshotCallback {
     
     private static final String TAG = "ProcessService";
     
@@ -50,7 +52,7 @@ public class CommandService extends AccessibilityService {
 
     private int mTakeScreenShotDelayMs = 100;
 
-    private StateToken state = new StateToken();
+    private final StateToken state = new StateToken();
     
     private WindowManager mWindowManager;
     private View myFloatingView;
@@ -138,54 +140,14 @@ public class CommandService extends AccessibilityService {
             instance.takeScreenshotOfWindow(
                     instance.getRootInActiveWindow().getWindowId(),
                     Executors.newSingleThreadExecutor(),
-                    new TakeScreenshotCallback() {
-                        @Override
-                        public void onSuccess(ScreenshotResult screenshotResult) {
-                            CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                        }
-    
-                        @Override
-                        public void onFailure(int i) {
-                            Log.d(TAG, "Failure code is " + i);
-                        }
-                    }
+                    instance
             );
         }
         else {
-            int delay = 100;
             instance.takeScreenshot(
                     Display.DEFAULT_DISPLAY,
                     Executors.newSingleThreadExecutor(),
-                    new TakeScreenshotCallback() {
-                        @Override
-                        public void onSuccess(ScreenshotResult screenshotResult) {
-                            CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                        }
-    
-                        @Override
-                        public void onFailure(int errorCode) {
-                            try {
-                                if (errorCode == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT) {
-                                    // try again later, incrementing delay
-                                    instance.mTakeScreenShotDelayMs += 50;
-                                    App.sleep(instance.mTakeScreenShotDelayMs);
-                                        try {
-                                            instance.takeScreenshot(Display.DEFAULT_DISPLAY,
-                                                    Executors.newSingleThreadExecutor(),
-                                                    this
-                                            );
-                                        } catch (Exception ignored) {
-                                            // instance might be gone
-                                        }
-                                    Log.w(TAG, "takeScreenShots: onFailure with ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT - upped delay to " + instance.mTakeScreenShotDelayMs);
-                                    return;
-                                }
-                                Log.e(TAG, "takeScreenShots: onFailure with error code " + errorCode);
-                            } catch (Exception e) {
-                                Log.e(TAG, "takeScreenShots: onFailure exception " + e);
-                            }
-                        }
-                    }
+                    instance
             );
         }
 
@@ -213,7 +175,7 @@ public class CommandService extends AccessibilityService {
         
         mWindowManager.addView(myFloatingView, params);
 
-        // adding an touchlistener to make drag movement of the floating widget
+        // adding an touch listener to make drag movement of the floating widget
         myFloatingView
                 .findViewById(R.id.thisIsAnID)
                 .setOnTouchListener(
@@ -287,7 +249,35 @@ public class CommandService extends AccessibilityService {
         
         return builder.build();
     }
-    
+
+    @Override
+    public void onSuccess(@NonNull ScreenshotResult screenshotResult) {
+        CommandService.screen = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+    }
+
+    @Override
+    public void onFailure(int errorCode) {
+        try {
+            if (errorCode == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT) {
+                instance.mTakeScreenShotDelayMs += 50;
+                App.sleep(instance.mTakeScreenShotDelayMs);
+                try {
+                    instance.takeScreenshot(Display.DEFAULT_DISPLAY,
+                            Executors.newSingleThreadExecutor(),
+                            this
+                    );
+                } catch (Exception ignored) {
+                    // instance might be gone
+                }
+                Log.w(TAG, "takeScreenShots: onFailure with ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT - upped delay to " + instance.mTakeScreenShotDelayMs);
+                return;
+            }
+            Log.e(TAG, "takeScreenShots: onFailure with error code " + errorCode);
+        } catch (Exception e) {
+            Log.e(TAG, "takeScreenShots: onFailure exception " + e);
+        }
+    }
+
     public class StateToken {
         
         private volatile boolean running = false;

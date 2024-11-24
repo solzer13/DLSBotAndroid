@@ -63,9 +63,6 @@ public class Sprite {
         long outed = started + delay_before + timeout;
         delay(state, delay_before);
         while(state.isRunning()){
-            
-            App.bus.post(new OnUserLog("o:"+outed));
-            App.bus.post(new OnUserLog("c:"+String.valueOf(System.currentTimeMillis())));
             if(System.currentTimeMillis() > outed){
                 App.bus.post(new OnUserLog("Timeout: " + (started + delay_before + timeout)));
                 return false;
