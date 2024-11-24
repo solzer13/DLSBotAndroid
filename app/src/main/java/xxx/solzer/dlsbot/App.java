@@ -3,12 +3,14 @@ package xxx.solzer.dlsbot;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +27,7 @@ import xxx.solzer.dlsbot.modules.AllianceGifts;
 import xxx.solzer.dlsbot.modules.BountyGround;
 import xxx.solzer.dlsbot.modules.CollectingHome;
 import xxx.solzer.dlsbot.modules.DonateTechnologies;
+import xxx.solzer.dlsbot.modules.Farming;
 import xxx.solzer.dlsbot.modules.Garage;
 import xxx.solzer.dlsbot.modules.Help;
 import xxx.solzer.dlsbot.modules.Police;
@@ -47,7 +50,7 @@ public class App extends Application {
     
     public static final Screen[] SCREENS = new Screen[]{ 
         new Screen(2179, 1080, 1, 1),
-        new Screen(1340, 800, 0.69, 0.56)
+        new Screen(1340, 800, 0.695, 0.56)
     };
     
     public App(){
@@ -74,6 +77,7 @@ public class App extends Application {
                     new Police(),
                     new Radar(),
                     new AllianceGifts(),
+                    new Farming(),
                     new BountyGround(),
                     new WaterWar()
             );
@@ -84,6 +88,10 @@ public class App extends Application {
         
         bus.register(userLog);
         bus.register(modules);
+    }
+    
+    public static SharedPreferences getPreferences(){
+        return PreferenceManager.getDefaultSharedPreferences(instance);
     }
     
     public static void sleep(int millis){

@@ -13,8 +13,8 @@ import xxx.solzer.dlsbot.events.OnUserLog;
 
 public class Sprite {
     
-    private static final int BEFORE_DELAY = 0;
-    private static final int TIMEOUT = 10000;
+    private static final int BEFORE_DELAY = 500;
+    private static final int TIMEOUT = 5000;
     private static final int AFTER_DELAY = 500;
     
     private final Path path;
@@ -60,8 +60,16 @@ public class Sprite {
 
     public boolean pushTimeout(CommandService.StateToken state, int delay_before, int timeout, int delay_after){
         long started = System.currentTimeMillis();
+        long outed = started + delay_before + timeout;
         delay(state, delay_before);
         while(state.isRunning()){
+            
+            App.bus.post(new OnUserLog("o:"+outed));
+            App.bus.post(new OnUserLog("c:"+String.valueOf(System.currentTimeMillis())));
+            if(System.currentTimeMillis() > outed){
+                App.bus.post(new OnUserLog("Timeout: " + (started + delay_before + timeout)));
+                return false;
+            }
             Point point = find();
             if(point != null){
                 App.bus.post(new OnTap(point));
@@ -70,11 +78,7 @@ public class Sprite {
                 }
                 delay(state, delay_after);
                 return true;
-            }
-            
-            if((started + delay_before + delay_after + timeout) < System.currentTimeMillis()){
-                break;
-            }
+            } 
         }
         return false;
     }

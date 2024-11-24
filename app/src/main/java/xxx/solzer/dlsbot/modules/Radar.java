@@ -31,16 +31,24 @@ public class Radar extends Module {
     private static final String BOX_RED_NAME = "Парашют";
     
     private static final String TRUCK_RED_FILE = "truck_red.png";
-    private static final double TRUCK_RED_THRESHOLD = 0.55;
-    private static final String TRUCK_RED_NAME = "Грузовик";
+    private static final double TRUCK_RED_THRESHOLD = 0.6;
+    private static final String TRUCK_RED_NAME = "Красный грузовик";
     
     private static final String TRUCK_GOLD_FILE = "truck_gold.png";
-    private static final double TRUCK_GOLD_THRESHOLD = 0.55;
-    private static final String TRUCK_GOLD_NAME = "Грузовик";
+    private static final double TRUCK_GOLD_THRESHOLD = 0.6;
+    private static final String TRUCK_GOLD_NAME = "Золотой грузовик";
     
     private static final String TRUCK_VIOLET_FILE = "truck_violet.png";
-    private static final double TRUCK_VIOLET_THRESHOLD = 0.55;
-    private static final String TRUCK_VIOLET_NAME = "Грузовик";
+    private static final double TRUCK_VIOLET_THRESHOLD = 0.6;
+    private static final String TRUCK_VIOLET_NAME = "Фиолетовый грузовик";
+    
+    private static final String SURVIVOR_GOLD_FILE = "survivor_gold.png";
+    private static final double SURVIVOR_GOLD_THRESHOLD = 0.6;
+    private static final String SURVIVOR_GOLD_NAME = "Золотой выживший";
+    
+    private static final String SURVIVOR_VIOLET_FILE = "survivor_violet.png";
+    private static final double SURVIVOR_VIOLET_THRESHOLD = 0.6;
+    private static final String SURVIVOR_VIOLET_NAME = "Фиолетовый выживший";
     
     private static final String COLLECT_FILE = "collect.png";
     private static final double COLLECT_THRESHOLD = 0.8;
@@ -65,6 +73,8 @@ public class Radar extends Module {
     private final Sprite btnTruckRed;
     private final Sprite btnTruckGold;
     private final Sprite btnTruckViolet;
+    private final Sprite btnSurvivorGold;
+    private final Sprite btnSurvivorViolet;
     private final Sprite btnCollect;
     private final Sprite btnNext;
     private final Sprite btnTransport;
@@ -113,6 +123,18 @@ public class Radar extends Module {
                         Imgproc.TM_CCOEFF_NORMED,
                         TRUCK_VIOLET_THRESHOLD,
                         getPushMsgLog(TRUCK_VIOLET_NAME));
+        btnSurvivorGold =
+                new Sprite(
+                        getAssetPath(SURVIVOR_GOLD_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        SURVIVOR_GOLD_THRESHOLD,
+                        getPushMsgLog(SURVIVOR_GOLD_NAME));
+        btnSurvivorViolet =
+                new Sprite(
+                        getAssetPath(SURVIVOR_VIOLET_FILE),
+                        Imgproc.TM_CCOEFF_NORMED,
+                        SURVIVOR_VIOLET_THRESHOLD,
+                        getPushMsgLog(SURVIVOR_VIOLET_NAME));
         this.btnCollect =
                 new Sprite(
                         getAssetPath(COLLECT_FILE),
@@ -168,6 +190,9 @@ public class Radar extends Module {
                             }
                         }
                     }
+                }
+                else if(btnSurvivorGold.pushIfExists(mat) || btnSurvivorViolet.pushIfExists(mat)){
+
                 }
                 else {
                     break;

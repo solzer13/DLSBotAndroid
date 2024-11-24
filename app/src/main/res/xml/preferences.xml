@@ -29,36 +29,31 @@
 
         <SeekBarPreference
             android:key="seekbar"
-            android:enabled="false"
             android:dependency="healing"
             android:title="Колличество войск"
             android:summary="Сколько войск лечить за раз"
             app:showSeekBarValue="true"
-            android:min="100"
+            app:min="100"
             android:max="5000"
             android:defaultValue="500"/>
         
         <CheckBoxPreference
             android:key="checkbox"
-            android:enabled="false"
             android:dependency="healing"
             android:title="Пехота"/>
         
         <CheckBoxPreference
             android:key="checkbox"
-            android:enabled="false"
             android:dependency="healing"
             android:title="Байкеры"/>
 
         <CheckBoxPreference
             android:key="checkbox"
-            android:enabled="false"
             android:dependency="healing"
             android:title="Лучники"/>
 
         <CheckBoxPreference
             android:key="checkbox"
-            android:enabled="false"
             android:dependency="healing"
             android:title="Машинки"/>
 
@@ -73,37 +68,33 @@
             android:title="Включить сбор ресурсов"/>
 
         <SeekBarPreference
-            android:key="seekbar"
-            android:enabled="false"
+            android:key="farming_count"
+            android:enabled="true"
             android:dependency="farming"
             android:title="Колличество отрядов"
-            android:summary="Сколько отрядов использовать.для сбора"
+            android:summary="Сколько отрядов использовать для сбора"
             app:showSeekBarValue="true"
-            android:min="100"
+            app:min="1"
             android:max="5"
             android:defaultValue="1"/>
         
         <CheckBoxPreference
-            android:key="checkbox"
-            android:enabled="false"
+            android:key="farming_tomatoes"
             android:dependency="farming"
             android:title="Помидоры"/>
         
         <CheckBoxPreference
-            android:key="checkbox"
-            android:enabled="false"
+            android:key="farming_wood"
             android:dependency="farming"
             android:title="Дерево"/>
 
         <CheckBoxPreference
-            android:key="checkbox"
-            android:enabled="false"
+            android:key="farming_steel"
             android:dependency="farming"
             android:title="Сталь"/>
 
         <CheckBoxPreference
-            android:key="checkbox"
-            android:enabled="false"
+            android:key="farming_oil"
             android:dependency="farming"
             android:title="Нефть"/>
 
@@ -114,59 +105,52 @@
         
         <SwitchPreferenceCompat
             android:key="help"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Помощь"
             android:summary="Нажимать кнопку помощи"/>
         
         <SwitchPreferenceCompat
             android:key="police"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Полицейский участок"
             android:summary="Запускать поиск в полицейском участке"/>
         
         <SwitchPreferenceCompat
             android:key="radar"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Радар"
             android:summary="Выполнять задания с радара"/>
         
         <SwitchPreferenceCompat
             android:key="collecting_home"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Ресурсы в убежище"
             android:summary="Собирать ресурсы в убежище"/>
         
         <SwitchPreferenceCompat
             android:key="donate_technologies"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Взносы в технологии"
             android:summary="Делать взносы в технологии альянса"/>
         
         <SwitchPreferenceCompat
             android:key="alliance_gifts"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Подарки"
             android:summary="Собирать подарки альянса"/>
         
         <SwitchPreferenceCompat
             android:key="garage"
-            app:enabled="false"
+            android:enabled="false"
             android:defaultValue="false"
             android:title="Гараж"
             android:summary="Запускать производство в гараже"/>
-        
-        <SwitchPreferenceCompat
-            android:key="airdrop"
-            app:enabled="false"
-            android:defaultValue="false"
-            android:title="Эйрдроп"
-            android:summary="Собирать эйрдропы"/>
         
     </PreferenceCategory>
 

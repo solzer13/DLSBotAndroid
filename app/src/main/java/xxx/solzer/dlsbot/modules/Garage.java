@@ -22,15 +22,15 @@ public class Garage extends Module {
 
     private static final String DETAILS_GOLD_FILE = "details_gold.png";
     private static final double DETAILS_GOLD_THRESHOLD = 0.8;
-    private static final String DETAILS_GOLD_NAME = "Собрать";
+    private static final String DETAILS_GOLD_NAME = "Золотые детали";
 
     private static final String DETAILS_VIOLET_FILE = "details_violet.png";
     private static final double DETAILS_VIOLET_THRESHOLD = 0.8;
-    private static final String DETAILS_VIOLET_NAME = "Собрать";
+    private static final String DETAILS_VIOLET_NAME = "Фиолетовые детали";
 
     private static final String DETAILS_BLUE_FILE = "details_blue.png";
     private static final double DETAILS_BLUE_THRESHOLD = 0.8;
-    private static final String DETAILS_BLUE_NAME = "Собрать";
+    private static final String DETAILS_BLUE_NAME = "Синие детали";
 
     private static final String CONGRATS_FILE = "congrats.png";
     private static final double CONGRATS_THRESHOLD = 0.8;
@@ -99,7 +99,8 @@ public class Garage extends Module {
         }
         
         if(btnGarage.pushIfExists(mat)){
-            if(btnDetailsGold.pushIfExists(1500) || btnDetailsViolet.pushIfExists(1500) || btnDetailsBlue.pushIfExists(1500)){
+            mat = CommandService.takeScreenMat();
+            if(btnDetailsGold.pushIfExists(mat, 1500) || btnDetailsViolet.pushIfExists(mat, 1500) || btnDetailsBlue.pushIfExists(mat, 1500)){
                 btnCongrats.pushIfExists(2000);
             }
             
